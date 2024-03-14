@@ -1,75 +1,90 @@
-// Import necessary components and assets
-import { Button, Navbar } from 'flowbite-react';
-import logo from '../assets/logo.png';
-import { FaMoon } from "react-icons/fa";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
 import { Link, useLocation } from 'react-router-dom';
+import { AiOutlineSearch } from 'react-icons/ai';
+import { FaMoon } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import logo from '../assets/logo.png';
 
-// Header component definition
 export default function Header() {
-  // Get the current path using useLocation hook
   const path = useLocation().pathname;
+  const { currentUser } = useSelector((state) => state.user);
 
   return (
-    // Navbar container with shadow
-    <Navbar fluid rounded className='shadow'>
-
-      {/* Brand section with SLIIT logo and name */}
-      <Navbar.Brand href="#" className='ml-40'>
+    <Navbar className='border-b-2'>
+      <Navbar.Brand href="#">
         <img src={logo} className="mr-3 h-6 sm:h-9" alt="SLIIT Logo" />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">SLIIT UNIVERSITY</span>
       </Navbar.Brand>
 
-      {/* Navigation links with active styles based on the current path */}
-      <Navbar.Collapse >
-        {/* Home link */}
-        <Navbar.Link active={path === "/"} as={'div'} style={{ color: path === "/" ? "#F05941" : "#387ADF" }}>
-          <Link to='/' className="text-base sm:text-xl">Home</Link>
-        </Navbar.Link>
+      <form>
+        <TextInput
+          type='text'
+          placeholder='Search...'
+          rightIcon={AiOutlineSearch}
+          className='hidden lg:inline'
+        />
+      </form>
 
-        {/* Divider line */}
-        <div className="border-l border-gray-500 h-8"></div>
+      <Button className='w-12 h-10 lg:hidden' color='gray' pill>
+        <AiOutlineSearch />
+      </Button>
 
-        {/* Programmes link */}
-        <Navbar.Link active={path === "/programmes"} as={'div'} style={{ color: path === "/programmes" ? "#F05941" : "#387ADF" }}>
-          <Link to='/programmes' className="text-base sm:text-lg">Programmes</Link>
-        </Navbar.Link>
-
-        {/* Divider line */}
-        <div className="border-l border-gray-500 h-8"></div>
-
-        {/* Time Table link */}
-        <Navbar.Link active={path === "/time-table"} as={'div'} style={{ color: path === "/time-table" ? "#F05941" : "#387ADF" }}>
-          <Link to='/time-table' className="text-base sm:text-lg">Time Table</Link>
-        </Navbar.Link>
-
-        {/* Divider line */}
-        <div className="border-l border-gray-500 h-8"></div>
-
-        {/* About link */}
-        <Navbar.Link active={path === "/about"} as={'div'} style={{ color: path === "/about" ? "#F05941" : "#387ADF" }}>
-          <Link to='/about' className="text-base sm:text-lg" >About</Link>
-        </Navbar.Link>
-      </Navbar.Collapse>
-
-      {/* Buttons section for Sign In, Sign Up, and Theme Change */}
-      <div className='flex gap-4 mr-5'>
-        {/* Sign In button */}
-        <Link to='/sign-in' className="flex-none"> 
-          <Button gradientDuoTone="purpleToBlue" outline> 
-            Sign In
-          </Button>
-        </Link>
-        {/* Sign Up button */}
-        <Link to='/sign-up' className="flex-none"> 
-          <Button gradientDuoTone="pinkToOrange" outline> 
-            Sign Up
-          </Button>
-        </Link>
-        {/* Theme Change button */}
-        <Button className='hidden sm:inline' color='gray'> 
-          <FaMoon/>
+      <div className='flex gap-2 md:order-2'>
+        <Button className='w-12 h-10 hidden sm:inline' color='gray' pill>
+          <FaMoon />
         </Button>
+        {currentUser ? (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar alt='user' img={currentUser.profilePicture} rounded />
+            }
+          >
+            <Dropdown.Header>
+              <span className='block text-sm'>@{currentUser.username}</span>
+              <span className='block text-sm font-medium truncate'>{currentUser.email}</span>
+            </Dropdown.Header>
+
+            <Link to={'/dashboard?tab=profile'}>
+              <Dropdown.Item>Profile</Dropdown.Item>
+            </Link>
+            <Dropdown.Divider />
+            <Dropdown.Item>Sign out</Dropdown.Item>
+          </Dropdown>
+        ) : (
+          <Link to='/sign-in'>
+            <Button gradientDuoTone='purpleToBlue' outline>
+              Sign In
+            </Button>
+          </Link>
+        )}
+        <Navbar.Toggle />
       </div>
+      <Navbar.Collapse>
+        <Navbar.Link active={path === '/'} as={'div'} style={{ color: path === "/" ? "#F05941" : "#387ADF" }}>
+          <Link to='/'>Home</Link>
+        </Navbar.Link>
+
+        <div className="border-l border-gray-500 h-6"></div>
+
+        <Navbar.Link active={path === '/programmes'} as={'div'} style={{ color: path === "/programmes" ? "#F05941" : "#387ADF" }}>
+          <Link to='/programmes'>Programmes</Link>
+        </Navbar.Link>
+
+        <div className="border-l border-gray-500 h-6"></div>
+
+        <Navbar.Link active={path === '/time-table'} as={'div'} style={{ color: path === "/time-table" ? "#F05941" : "#387ADF" }}>
+          <Link to='/time-table'>Time Table</Link>
+        </Navbar.Link>
+
+        <div className="border-l border-gray-500 h-6"></div>
+
+        <Navbar.Link active={path === '/about'} as={'div'} style={{ color: path === "/about" ? "#F05941" : "#387ADF" }}>
+          <Link to='/about'>About</Link>
+        </Navbar.Link>
+
+      </Navbar.Collapse>
     </Navbar>
   );
 }
