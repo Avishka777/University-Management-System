@@ -68,4 +68,17 @@ export const getnotifications = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+
+};
+
+export const deletenotification = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(errorHandler(403, 'You are not allowed to delete this notification'));
+  }
+  try {
+    await Notification.findByIdAndDelete(req.params.notificationId);
+    res.status(200).json('The notification has been deleted');
+  } catch (error) {
+    next(error);
+  }
 };
