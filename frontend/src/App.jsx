@@ -9,6 +9,8 @@ import Programmes from "./pages/Programmes"
 import TimeTable from "./pages/TimeTable"
 import Footer from "./components/Footer"
 import PrivateRoute from './components/PrivateRoute';
+import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute';
+import CreateNotification from './pages/CreateNotification';
 
 export default function App() {
   return (
@@ -22,6 +24,11 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path='/dashboard' element={<Dashboard />} />
         </Route>
+
+        <Route element={<OnlyAdminPrivateRoute />}>
+          <Route path='/create-notification' element={<CreateNotification />} />
+        </Route>
+
         <Route path="/programmes" element={<Programmes/>}/>
         <Route path="/time-table" element={<TimeTable/>}/>
 
