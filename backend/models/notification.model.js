@@ -16,6 +16,7 @@ const notificationSchema = new mongoose.Schema(
     },
     image: {
       type: String,
+      default:"https://firebasestorage.googleapis.com/v0/b/mern-university-management.appspot.com/o/Notification.jpg?alt=media&token=9eb798f9-4c06-4d7f-b16c-2c032e4f205b",
     },
     category: {
       type: String,
