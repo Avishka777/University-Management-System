@@ -82,3 +82,26 @@ export const deletenotification = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updatenotification = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(errorHandler(403, 'You are not allowed to update this notification'));
+  }
+  try {
+    const updatedNotification = await Notification.findByIdAndUpdate(
+      req.params.notificationId,
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          category: req.body.category,
+          image: req.body.image,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedNotification);
+  } catch (error) {
+    next(error);
+  }
+};

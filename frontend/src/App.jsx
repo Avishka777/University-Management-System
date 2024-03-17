@@ -11,6 +11,7 @@ import Footer from "./components/Footer"
 import PrivateRoute from './components/PrivateRoute';
 import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute';
 import CreateNotification from './pages/CreateNotification';
+import UpdateNotification from './pages/UpdateNotification';
 
 export default function App() {
   return (
@@ -27,11 +28,11 @@ export default function App() {
 
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path='/create-notification' element={<CreateNotification />} />
+          <Route path='/update-notification/:notificationId' element={<UpdateNotification />} />
         </Route>
 
         <Route path="/programmes" element={<Programmes/>}/>
         <Route path="/time-table" element={<TimeTable/>}/>
-
       </Routes>
       <Footer/>
     </BrowserRouter>
