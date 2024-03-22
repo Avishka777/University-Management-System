@@ -77,25 +77,26 @@ export const create = async (req, res, next) => {
     }
   };
 
-//   export const updatenotification = async (req, res, next) => {
-//     if (!req.user.isAdmin || req.user.id !== req.params.userId) {
-//       return next(errorHandler(403, 'You are not allowed to update this notification'));
-//     }
-//     try {
-//       const updatedNotification = await Notification.findByIdAndUpdate(
-//         req.params.notificationId,
-//         {
-//           $set: {
-//             title: req.body.title,
-//             content: req.body.content,
-//             category: req.body.category,
-//             image: req.body.image,
-//           },
-//         },
-//         { new: true }
-//       );
-//       res.status(200).json(updatedNotification);
-//     } catch (error) {
-//       next(error);
-//     }
-//   };
+  export const updatecourse = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+      return next(errorHandler(403, 'You are not allowed to update this course'));
+    }
+    try {
+      const updatedCourse = await Course.findByIdAndUpdate(
+        req.params.courseId,
+        {
+          $set: {
+            courseName: req.body.courseName,
+            courseCode: req.body.courseCode,
+            courseDescription: req.body.courseDescription,
+            courseCredit: req.body.courseCredit,
+            courseFaculty: req.body.courseFaculty,
+          },
+        },
+        { new: true }
+      );
+      res.status(200).json(updatedCourse);
+    } catch (error) {
+      next(error);
+    }
+  };
