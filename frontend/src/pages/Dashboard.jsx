@@ -4,6 +4,7 @@ import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import DashNotifications from '../components/DashNotifications';
 import DashUsers from '../components/DashUsers';
+import DashboardComp from '../components/DashboardComp';
 
 export default function Dashboard() {
   const location = useLocation();
@@ -27,6 +28,8 @@ export default function Dashboard() {
       {tab === 'notifications' && <DashNotifications />}
       {/* users */}
       {tab === 'users' && <DashUsers />}
+      {/* dashboard comp */}
+      {tab === 'dash' && <DashboardComp />}
     </div>
   );
 }
