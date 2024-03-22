@@ -25,7 +25,12 @@ const courseSchema = new mongoose.Schema(
     courseFaculty: {
         type: String,
         default: 'uncategorized',
-      },
+    },
+    slug: {
+        type: String,
+        required: true,
+        unique: true,
+    },
   },
   { timestamps: true }
 );

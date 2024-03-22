@@ -3,15 +3,21 @@ import { errorHandler } from '../utils/error.js';
 
 export const create = async (req, res, next) => {
     if (!req.user.isAdmin) {
-      return next(errorHandler(403, 'You are not allowed to create a notification'));
+      return next(errorHandler(403, 'You are not allowed to create a course'));
     }
     if (!req.body.courseCode || !req.body.courseName) {
       return next(errorHandler(400, 'Please provide all required fields'));
     }
+    const slug = req.body.courseCode
+    .split(' ')
+    .join('-')
+    .toLowerCase()
+    .replace(/[^a-zA-Z0-9-]/g, '');
     const newCourse = new Course({
-      ...req.body,
-      userId: req.user.id,
-    });
+    ...req.body,
+    slug,
+    userId: req.user.id,
+  });
     try {
       const savedCourse = await newCourse.save();
       res.status(201).json(savedCourse);
@@ -19,8 +25,6 @@ export const create = async (req, res, next) => {
       next(error);
     }
   };
-
-
   export const getcourses = async (req, res, next) => {
     try {
       const startIndex = parseInt(req.query.startIndex) || 0;
@@ -29,6 +33,7 @@ export const create = async (req, res, next) => {
       const courses = await Course.find({
         ...(req.query.userId && { userId: req.query.userId }),
         ...(req.query.courseName && { category: req.query.courseName }),
+        ...(req.query.slug && { slug: req.query.slug }),
         ...(req.query.courseId && { _id: req.query.courseId }),
         ...(req.query.searchTerm && {
           $or: [
@@ -40,21 +45,21 @@ export const create = async (req, res, next) => {
         .sort({ updatedAt: sortDirection })
         .skip(startIndex)
         .limit(limit);
-
+  
       const totalCourses = await Course.countDocuments();
-
+  
       const now = new Date();
-
+  
       const oneMonthAgo = new Date(
         now.getFullYear(),
         now.getMonth() - 1,
         now.getDate()
       );
-
+  
       const lastMonthCourses = await Course.countDocuments({
         createdAt: { $gte: oneMonthAgo },
       });
-
+  
       res.status(200).json({
         courses,
         totalCourses,
@@ -64,7 +69,7 @@ export const create = async (req, res, next) => {
       next(error);
     }
   };
-
+  
   export const deletecourse = async (req, res, next) => {
     if (!req.user.isAdmin) {
       return next(errorHandler(403, 'You are not allowed to delete this course'));
@@ -76,7 +81,7 @@ export const create = async (req, res, next) => {
       next(error);
     }
   };
-
+  
   export const updatecourse = async (req, res, next) => {
     if (!req.user.isAdmin) {
       return next(errorHandler(403, 'You are not allowed to update this course'));
