@@ -5,6 +5,7 @@ import DashProfile from '../components/DashProfile';
 import DashNotifications from '../components/DashNotifications';
 import DashUsers from '../components/DashUsers';
 import DashboardComp from '../components/DashboardComp';
+import SignUp from './SignUp';
 
 export default function Dashboard() {
   const location = useLocation();

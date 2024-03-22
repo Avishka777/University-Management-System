@@ -51,17 +51,31 @@ export default function DashboardComp() {
     }
   }, [currentUser]);
   return (
-    <div className='p-3 md:mx-auto'>
-      <div className='flex-wrap flex gap-4 justify-center'>
-        <div className='flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md'>
+    <div className='p-3 md:mx-auto '>
+      <div className='flex flex-row gap-4 justify-center '>
+
+        <div className='flex flex-col p-2 dark:bg-slate-800 gap-4 w-full rounded-md shadow-md'>
           <div className='flex justify-between'>
-            <div className=''>
-              <h3 className='text-gray-500 text-md uppercase'>Total Users</h3>
-              <p className='text-2xl'>{totalUsers}</p>
+            <div className='flex flex-row'>
+              <HiOutlineUserGroup className='bg-red-800  text-white rounded-full text-5xl p-3 shadow-lg m-2 ' />
+              <h3 className='text-gray-400 text-2xl m-4'>Total Users</h3>
+              <p className='text-2xl m-4'>{totalUsers}</p>
             </div>
-            <HiOutlineUserGroup className='bg-teal-600  text-white rounded-full text-5xl p-3 shadow-lg' />
+            <div className='flex gap-2 text-sm m-auto mr-2'>
+              {currentUser.isAdmin && (
+                <Link to={'/sign-up'}>
+                  <Button
+                    type='button'
+                    gradientDuoTone='purpleToPink'
+                    className='w-full'
+                  >
+                    Create User
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
-          <div className='flex  gap-2 text-sm'>
+          <div className='flex  gap-2 text-sm ml-3'>
             <span className='text-green-500 flex items-center'>
               <HiArrowNarrowUp />
               {lastMonthUsers}
@@ -69,23 +83,30 @@ export default function DashboardComp() {
             <div className='text-gray-500'>Last month</div>
           </div>
         </div>
-        <div className='flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md'>
+
+        <div className='flex flex-col p-2 dark:bg-slate-800 gap-4 w-full rounded-md shadow-md'>
           <div className='flex justify-between'>
-            <HiAnnotation className='bg-indigo-600  text-white rounded-full text-5xl p-3 shadow-lg' />
-          </div>
-          <div className='flex  gap-2 text-sm'>
-            <div className='text-gray-500'>Last month</div>
-          </div>
-        </div>
-        <div className='flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md'>
-          <div className='flex justify-between'>
-            <div className=''>
-              <h3 className='text-gray-500 text-md uppercase'>Total Notifications</h3>
-              <p className='text-2xl'>{totalNotifications}</p>
+            <div className='flex flex-row'>
+            <HiDocumentText className='bg-lime-600  text-white rounded-full text-5xl p-3 shadow-lg m-2 ' />
+              <h3 className='text-gray-400 text-2xl m-4'>Total Notifications</h3>
+              <p className='text-2xl m-4'>{totalNotifications}</p>
             </div>
-            <HiDocumentText className='bg-lime-600  text-white rounded-full text-5xl p-3 shadow-lg' />
+            <div className='flex gap-2 text-sm m-auto mr-2'>
+              {currentUser.isAdmin && (
+                <Link to={'/create-notification'}>
+                  <Button
+                    type='button'
+                    gradientDuoTone='purpleToPink'
+                    className='w-full'
+                  >
+                    Create Notice
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
-          <div className='flex  gap-2 text-sm'>
+
+          <div className='flex  gap-2 text-sm ml-3'>
             <span className='text-green-500 flex items-center'>
               <HiArrowNarrowUp />
               {lastMonthNotifications}
