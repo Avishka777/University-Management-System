@@ -33,7 +33,7 @@ export const getnotifications = async (req, res, next) => {
     const notifications = await Notification.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
-      ...(req.query.slug && { category: req.query.slug }),
+      ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.notificationId && { _id: req.query.notificationId }),
       ...(req.query.searchTerm && {
         $or: [

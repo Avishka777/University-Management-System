@@ -6,6 +6,77 @@ body {
   height: 100vh;
 }
 
+
+
+
 .ql-editor {
+
   font-size: 1.05rem;
+
+}
+
+
+
+
+.notification-content p {
+
+  margin-bottom: 0.5rem;
+
+}
+
+
+
+
+.notification-content h1 {
+
+  font-size: 1.5rem;
+
+  font-weight: 600;
+
+  font-family: sans-serif;
+
+  margin: 1.5rem 0;
+
+}
+
+
+
+
+.notification-content h2 {
+
+  font-size: 1.4rem;
+
+  font-family: sans-serif;
+
+  margin: 1.5rem 0;
+
+}
+
+
+
+
+.notification-content a {
+
+  color: rgb(73, 149, 199);
+
+  text-decoration: none;
+
+}
+
+
+
+
+.notification-content a:hover {
+
+  text-decoration: underline;
+
+}
+
+
+
+
+.dark .notification-content a {
+
+  color: red;
+
 }

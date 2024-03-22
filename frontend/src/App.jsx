@@ -12,6 +12,7 @@ import PrivateRoute from './components/PrivateRoute';
 import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute';
 import CreateNotification from './pages/CreateNotification';
 import UpdateNotification from './pages/UpdateNotification';
+import NotificationPage from './pages/NotificationPage';
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         </Route>
 
         <Route path="/programmes" element={<Programmes/>}/>
+        <Route path='/notification/:notificationSlug' element={<NotificationPage />} />
         <Route path="/time-table" element={<TimeTable/>}/>
       </Routes>
       <Footer/>
