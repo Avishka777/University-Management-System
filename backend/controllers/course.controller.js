@@ -65,17 +65,17 @@ export const create = async (req, res, next) => {
     }
   };
 
-//   export const deletenotification = async (req, res, next) => {
-//     if (!req.user.isAdmin || req.user.id !== req.params.userId) {
-//       return next(errorHandler(403, 'You are not allowed to delete this notification'));
-//     }
-//     try {
-//       await Notification.findByIdAndDelete(req.params.notificationId);
-//       res.status(200).json('The notification has been deleted');
-//     } catch (error) {
-//       next(error);
-//     }
-//   };
+  export const deletecourse = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+      return next(errorHandler(403, 'You are not allowed to delete this course'));
+    }
+    try {
+      await Course.findByIdAndDelete(req.params.courseId);
+      res.status(200).json('The Course has been deleted');
+    } catch (error) {
+      next(error);
+    }
+  };
 
 //   export const updatenotification = async (req, res, next) => {
 //     if (!req.user.isAdmin || req.user.id !== req.params.userId) {
