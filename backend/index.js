@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.route.js';
 import notificationRoutes from './routes/notification.route.js';
 import courseRoutes from './routes/course.route.js';
 import cookieParser from 'cookie-parser';
+import bookingRoutes from './routes/booking.route.js';
 
 dotenv.config();
 mongoose
@@ -27,6 +28,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/notification', notificationRoutes);
 app.use('/api/course', courseRoutes)
+app.use('/api/booking', bookingRoutes)
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
