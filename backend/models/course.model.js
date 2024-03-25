@@ -2,10 +2,6 @@ import mongoose from 'mongoose';
 
 const courseSchema = new mongoose.Schema(
   {
-    userId: {
-      type: String,
-      required: true,
-    },
     courseName: {
       type: String,
       required: true,
@@ -22,19 +18,21 @@ const courseSchema = new mongoose.Schema(
     courseCredit: {
       type: String,
     },
-    courseFaculty: {
-        type: String,
-        default: 'uncategorized',
-    },
+    enrolledStudents: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User' 
+    }],
+    enrolledfaculty: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User' 
+    }],
     slug: {
-        type: String,
-        required: true,
-        unique: true,
+      type: String,
+      required: true,
+      unique: true,
     },
   },
   { timestamps: true }
 );
-
 const Course = mongoose.model('Course', courseSchema);
-
 export default Course;

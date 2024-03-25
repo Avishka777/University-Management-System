@@ -24,10 +24,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isFaculty: {
-      type: Boolean,
-      default: false,
+    role: { 
+      type: String, 
+      default: false 
     },
+    enrolledCourses: [{ 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'courses' 
+    }]
   },
   { timestamps: true }
 );

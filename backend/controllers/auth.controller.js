@@ -3,7 +3,7 @@ import bcryptjs from 'bcryptjs';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
 export const signup = async (req, res, next) => {
-  const { username, email, password,isFaculty } = req.body;
+  const { username, email, password,role } = req.body;
   if (
     !username ||
     !email ||
@@ -19,7 +19,7 @@ export const signup = async (req, res, next) => {
     username,
     email,
     password: hashedPassword,
-    isFaculty,
+    role,
   });
   try {
     await newUser.save();
@@ -46,9 +46,7 @@ export const signin = async (req, res, next) => {
       { id: validUser._id, isAdmin: validUser.isAdmin },
       process.env.JWT_SECRET
     );
-
     const { password: pass, ...rest } = validUser._doc;
-
     res
       .status(200)
       .cookie('access_token', token, {
