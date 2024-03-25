@@ -6,7 +6,7 @@ import authRoutes from './routes/auth.route.js';
 import notificationRoutes from './routes/notification.route.js';
 import courseRoutes from './routes/course.route.js';
 import cookieParser from 'cookie-parser';
-import bookingRoutes from './routes/booking.route.js';
+import bookingRoutes from './routes/classroom.route.js';
 
 dotenv.config();
 mongoose
