@@ -28,3 +28,27 @@ export const create = async (req, res, next) => {
         next(error);
     }
 };
+
+// Get all timetables
+export const getAll = async (req, res, next) => {
+    try {
+        const timetables = await TimeTable.find();
+        res.status(200).json(timetables);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Get timetable by ID
+export const getById = async (req, res, next) => {
+    try {
+        const timetableId = req.params.id;
+        const timetable = await TimeTable.findById(timetableId);
+        if (!timetable) {
+            return next(errorHandler(404, 'Timetable not found'));
+        }
+        res.status(200).json(timetable);
+    } catch (error) {
+        next(error);
+    }
+};
