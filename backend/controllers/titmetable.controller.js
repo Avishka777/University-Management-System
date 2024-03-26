@@ -81,3 +81,25 @@ export const update = async (req, res, next) => {
         next(error);
     }
 };
+
+
+
+// Delete timetable by ID
+export const remove = async (req, res, next) => {
+    try {
+        const timetableId = req.params.id;
+
+        // Check if timetable exists
+        const timetable = await TimeTable.findById(timetableId);
+        if (!timetable) {
+            return next(errorHandler(404, 'Timetable not found'));
+        }
+
+        // Delete the timetable
+        await TimeTable.deleteOne({ _id: timetableId });
+
+        res.status(200).json({ success: true, message: 'Timetable deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
