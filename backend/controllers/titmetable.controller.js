@@ -52,3 +52,32 @@ export const getById = async (req, res, next) => {
         next(error);
     }
 };
+
+// Update timetable
+export const update = async (req, res, next) => {
+    try {
+        const { classSession, course, day, time, faculty, location } = req.body;
+        const timetableId = req.params.id;
+
+        // Check if timetable exists
+        const timetable = await TimeTable.findById(timetableId);
+        if (!timetable) {
+            return next(errorHandler(404, 'Timetable not found'));
+        }
+
+        // Update timetable fields
+        timetable.classSession = classSession;
+        timetable.course = course;
+        timetable.day = day;
+        timetable.time = time;
+        timetable.faculty = faculty;
+        timetable.location = location;
+
+        // Save the updated timetable
+        const updatedTimetable = await timetable.save();
+
+        res.status(200).json(updatedTimetable);
+    } catch (error) {
+        next(error);
+    }
+};
