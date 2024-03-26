@@ -116,3 +116,19 @@ export const update = async (req, res, next) => {
         next(error);
     }
 };
+
+
+
+export const remove = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const classroom = await Classroom.findById(id);
+        if (!classroom) {
+            return next(errorHandler(404, 'Classroom not found'));
+        }
+        await classroom.deleteOne(); // Use deleteOne() method instead of remove()
+        res.status(200).json({ message: 'Classroom deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
