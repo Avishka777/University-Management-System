@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 const timeTableSchema = new mongoose.Schema(
     {
     classSession: { 
@@ -11,7 +10,7 @@ const timeTableSchema = new mongoose.Schema(
         ref: 'courses' 
     },
     day: { 
-        type: String, 
+        type: Date, 
         require: true 
     },
     time: { 
@@ -26,9 +25,6 @@ const timeTableSchema = new mongoose.Schema(
         type: String, 
         require: true 
     },
-
 }, { timestamps: true })
-
 const TimeTable = mongoose.model('TimeTable', timeTableSchema);
-
 export default TimeTable;

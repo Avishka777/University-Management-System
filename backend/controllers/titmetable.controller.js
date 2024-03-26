@@ -103,3 +103,22 @@ export const remove = async (req, res, next) => {
         next(error);
     }
 };
+
+
+
+// Get weekly timetable
+export const getWeeklyTimetable = async (req, res, next) => {
+    try {
+        const today = new Date();
+        const nextWeek = new Date(today);
+        nextWeek.setDate(today.getDate() + 7); // Get date for next week
+
+        const weeklyTimetable = await TimeTable.find({
+            day: { $gte: today, $lt: nextWeek } // Get timetables for the upcoming week
+        });
+
+        res.status(200).json(weeklyTimetable);
+    } catch (error) {
+        next(error);
+    }
+};
