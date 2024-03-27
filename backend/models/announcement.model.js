@@ -1,7 +1,14 @@
 import mongoose from 'mongoose';
-const notificationSchema = new mongoose.Schema(
+
+
+
+
+const announcementSchema = new mongoose.Schema(
+
   {
+
     userId: {
+
       type: String,
       required: true,
     },
@@ -28,7 +35,17 @@ const notificationSchema = new mongoose.Schema(
       unique: true,
     },
   },
+
   { timestamps: true }
+
 );
-const Notification = mongoose.model('Notification', notificationSchema);
-export default Notification;
+
+
+
+
+const Announcement = mongoose.model('Announcement', announcementSchema);
+
+
+
+
+export default Announcement;

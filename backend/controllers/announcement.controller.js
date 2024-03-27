@@ -1,40 +1,44 @@
-import Notification from '../models/notification.model.js';
+import Announcement from '../models/announcement.model.js';
 import { errorHandler } from '../utils/error.js';
+
+
+//Create Announcement
 export const create = async (req, res, next) => {
   if (!req.user.isAdmin) {
-    return next(errorHandler(403, 'You are not allowed to create a notification'));
+    return next(errorHandler(403, 'You Are Not Allowed to Create a Announcement'));
   }
   if (!req.body.title || !req.body.content) {
-    return next(errorHandler(400, 'Please provide all required fields'));
+    return next(errorHandler(400, 'Please Provide All Required Fields'));
   }
   const slug = req.body.title
     .split(' ')
     .join('-')
     .toLowerCase()
     .replace(/[^a-zA-Z0-9-]/g, '');
-  const newNotification = new Notification({
+  const newAnnouncement = new Announcement({
     ...req.body,
     slug,
     userId: req.user.id,
   });
   try {
-    const savedNotification = await newNotification.save();
-    res.status(201).json(savedNotification);
+    const savedAnnouncement = await newAnnouncement.save();
+    res.status(201).json(savedAnnouncement);
   } catch (error) {
     next(error);
   }
 };
 
-export const getnotifications = async (req, res, next) => {
+//Get All Announcement
+export const getannouncements = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === 'asc' ? 1 : -1;
-    const notifications = await Notification.find({
+    const announcements = await Announcement.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
       ...(req.query.slug && { slug: req.query.slug }),
-      ...(req.query.notificationId && { _id: req.query.notificationId }),
+      ...(req.query.announcementId && { _id: req.query.announcementId }),
       ...(req.query.searchTerm && {
         $or: [
           { title: { $regex: req.query.searchTerm, $options: 'i' } },
@@ -46,7 +50,7 @@ export const getnotifications = async (req, res, next) => {
       .skip(startIndex)
       .limit(limit);
 
-    const totalNotifications = await Notification.countDocuments();
+    const totalAnnouncements = await Announcement.countDocuments();
 
     const now = new Date();
 
@@ -56,40 +60,41 @@ export const getnotifications = async (req, res, next) => {
       now.getDate()
     );
 
-    const lastMonthNotifications = await Notification.countDocuments({
+    const lastMonthAnnouncements = await Announcement.countDocuments({
       createdAt: { $gte: oneMonthAgo },
     });
 
     res.status(200).json({
-      notifications,
-      totalNotifications,
-      lastMonthNotifications,
+      announcements,
+      totalAnnouncements,
+      lastMonthAnnouncements,
     });
   } catch (error) {
     next(error);
   }
-
 };
 
-export const deletenotification = async (req, res, next) => {
+//Delete Announcement
+export const deleteannouncement = async (req, res, next) => {
   if (!req.user.isAdmin || req.user.id !== req.params.userId) {
-    return next(errorHandler(403, 'You are not allowed to delete this notification'));
+    return next(errorHandler(403, 'You Are Not Allowed to Delete This Announcement'));
   }
   try {
-    await Notification.findByIdAndDelete(req.params.notificationId);
-    res.status(200).json('The notification has been deleted');
+    await Announcement.findByIdAndDelete(req.params.announcementId);
+    res.status(200).json('The Announcement Has Been Deleted');
   } catch (error) {
     next(error);
   }
 };
 
-export const updatenotification = async (req, res, next) => {
+//Update Announcement
+export const updateannouncement = async (req, res, next) => {
   if (!req.user.isAdmin || req.user.id !== req.params.userId) {
-    return next(errorHandler(403, 'You are not allowed to update this notification'));
+    return next(errorHandler(403, 'You Are Not Allowed to Update This Announcement'));
   }
   try {
-    const updatedNotification = await Notification.findByIdAndUpdate(
-      req.params.notificationId,
+    const updatedAnnouncement = await Announcement.findByIdAndUpdate(
+      req.params.announcementId,
       {
         $set: {
           title: req.body.title,
@@ -100,7 +105,7 @@ export const updatenotification = async (req, res, next) => {
       },
       { new: true }
     );
-    res.status(200).json(updatedNotification);
+    res.status(200).json(updatedAnnouncement);
   } catch (error) {
     next(error);
   }
