@@ -20,3 +20,14 @@ export const createNotification = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// Route to Get All Notifications
+export const getAllNotification = async (req, res) => {
+    try {
+        const notifications = await Notification.find();
+        res.json(notifications);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
