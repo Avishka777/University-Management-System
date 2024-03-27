@@ -13,15 +13,13 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom';
 
-export default function CreateNotification() {
+export default function CreateAnnouncement() {
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
-
   const navigate = useNavigate();
-
   const handleUpdloadImage = async () => {
     try {
       if (!file) {
@@ -61,7 +59,7 @@ export default function CreateNotification() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/notification/create', {
+      const res = await fetch('/api/announcement/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +74,7 @@ export default function CreateNotification() {
 
       if (res.ok) {
         setPublishError(null);
-        navigate(`/notification/${data.slug}`);
+        navigate(`/announcement/${data.slug}`);
       }
     } catch (error) {
       setPublishError('Something went wrong');
@@ -84,7 +82,7 @@ export default function CreateNotification() {
   };
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
-      <h1 className='text-center text-3xl my-7 font-semibold'>Create a Notification</h1>
+      <h1 className='text-center text-3xl my-7 font-semibold'>Create a Announcement</h1>
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>
           <TextInput

@@ -11,11 +11,11 @@ import { Link } from 'react-router-dom';
 
 export default function DashboardComp() {
   const [users, setUsers] = useState([]);
-  const [notifications, setNotifications] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
-  const [totalNotifications, setTotalNotifications] = useState(0);
+  const [totalAnnouncements, setTotalAnnouncements] = useState(0);
   const [lastMonthUsers, setLastMonthUsers] = useState(0);
-  const [lastMonthNotifications, setLastMonthNotifications] = useState(0);
+  const [lastMonthAnnouncements, setLastMonthAnnouncements] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
     const fetchUsers = async () => {
@@ -31,14 +31,14 @@ export default function DashboardComp() {
         console.log(error.message);
       }
     };
-    const fetchNotifications = async () => {
+    const fetchAnnouncements = async () => {
       try {
-        const res = await fetch('/api/notification/getnotifications?limit=5');
+        const res = await fetch('/api/announcement/getannouncements?limit=5');
         const data = await res.json();
         if (res.ok) {
-          setNotifications(data.notifications);
-          setTotalNotifications(data.totalNotifications);
-          setLastMonthNotifications(data.lastMonthNotifications);
+          setAnnouncements(data.announcements);
+          setTotalAnnouncements(data.totalAnnouncements);
+          setLastMonthAnnouncements(data.lastMonthAnnouncements);
         }
       } catch (error) {
         console.log(error.message);
@@ -47,13 +47,13 @@ export default function DashboardComp() {
 
     if (currentUser.isAdmin) {
       fetchUsers();
-      fetchNotifications();
+      fetchAnnouncements();
     }
   }, [currentUser]);
   return (
     <div className='p-3 md:mx-auto '>
       <div className='flex flex-row gap-4 justify-center '>
-
+        
         <div className='flex flex-col p-2 dark:bg-slate-800 gap-4 w-full rounded-md shadow-md'>
           <div className='flex justify-between'>
             <div className='flex flex-row'>
@@ -83,17 +83,16 @@ export default function DashboardComp() {
             <div className='text-gray-500'>Last month</div>
           </div>
         </div>
-
         <div className='flex flex-col p-2 dark:bg-slate-800 gap-4 w-full rounded-md shadow-md'>
           <div className='flex justify-between'>
             <div className='flex flex-row'>
             <HiDocumentText className='bg-lime-600  text-white rounded-full text-5xl p-3 shadow-lg m-2 ' />
-              <h3 className='text-gray-400 text-2xl m-4'>Total Notifications</h3>
-              <p className='text-2xl m-4'>{totalNotifications}</p>
+              <h3 className='text-gray-400 text-2xl m-4'>Total Announcements</h3>
+              <p className='text-2xl m-4'>{totalAnnouncements}</p>
             </div>
             <div className='flex gap-2 text-sm m-auto mr-2'>
               {currentUser.isAdmin && (
-                <Link to={'/create-notification'}>
+                <Link to={'/create-announcement'}>
                   <Button
                     type='button'
                     gradientDuoTone='purpleToPink'
@@ -105,11 +104,11 @@ export default function DashboardComp() {
               )}
             </div>
           </div>
-
+          
           <div className='flex  gap-2 text-sm ml-3'>
             <span className='text-green-500 flex items-center'>
               <HiArrowNarrowUp />
-              {lastMonthNotifications}
+              {lastMonthAnnouncements}
             </span>
             <div className='text-gray-500'>Last month</div>
           </div>
@@ -147,30 +146,30 @@ export default function DashboardComp() {
         </div>
         <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
           <div className='flex justify-between  p-3 text-sm font-semibold'>
-            <h1 className='text-center p-2'>Recent Notifications</h1>
+            <h1 className='text-center p-2'>Recent Announcements</h1>
             <Button outline gradientDuoTone='purpleToPink'>
-              <Link to={'/dashboard?tab=notifications'}>See all</Link>
+              <Link to={'/dashboard?tab=announcements'}>See all</Link>
             </Button>
           </div>
           <Table hoverable>
             <Table.Head>
-              <Table.HeadCell>Notification image</Table.HeadCell>
-              <Table.HeadCell>Notification Title</Table.HeadCell>
+              <Table.HeadCell>Announcement image</Table.HeadCell>
+              <Table.HeadCell>Announcement Title</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
             </Table.Head>
-            {notifications &&
-              notifications.map((notification) => (
-                <Table.Body key={notification._id} className='divide-y'>
+            {announcements &&
+              announcements.map((announcement) => (
+                <Table.Body key={announcement._id} className='divide-y'>
                   <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
                     <Table.Cell>
                       <img
-                        src={notification.image}
+                        src={announcement.image}
                         alt='user'
                         className='w-14 h-10 rounded-md bg-gray-500'
                       />
                     </Table.Cell>
-                    <Table.Cell className='w-96'>{notification.title}</Table.Cell>
-                    <Table.Cell className='w-5'>{notification.category}</Table.Cell>
+                    <Table.Cell className='w-96'>{announcement.title}</Table.Cell>
+                    <Table.Cell className='w-5'>{announcement.category}</Table.Cell>
                   </Table.Row>
                 </Table.Body>
               ))}

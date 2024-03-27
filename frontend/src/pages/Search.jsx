@@ -1,7 +1,7 @@
 import { Button, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import NotificationCard from '../components/NotificationCard';
+import AnnouncementCard from '../components/AnnouncementCard';
 
 export default function Search() {
   const [sidebarData, setSidebarData] = useState({
@@ -11,14 +11,12 @@ export default function Search() {
   });
 
   console.log(sidebarData);
-  const [notifications, setNotifications] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
 
   const location = useLocation();
-
   const navigate = useNavigate();
-
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
@@ -33,26 +31,26 @@ export default function Search() {
       });
     }
 
-    const fetchNotifications = async () => {
+    const fetchAnnouncements = async () => {
       setLoading(true);
       const searchQuery = urlParams.toString();
-      const res = await fetch(`/api/notification/getnotifications?${searchQuery}`);
+      const res = await fetch(`/api/announcement/getannouncements?${searchQuery}`);
       if (!res.ok) {
         setLoading(false);
         return;
       }
       if (res.ok) {
         const data = await res.json();
-        setNotifications(data.notifications);
+        setAnnouncements(data.announcements);
         setLoading(false);
-        if (data.notifications.length === 9) {
+        if (data.announcements.length === 9) {
           setShowMore(true);
         } else {
           setShowMore(false);
         }
       }
     };
-    fetchNotifications();
+    fetchAnnouncements();
   }, [location.search]);
 
   const handleChange = (e) => {
@@ -68,7 +66,6 @@ export default function Search() {
       setSidebarData({ ...sidebarData, category });
     }
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(location.search);
@@ -80,26 +77,25 @@ export default function Search() {
   };
 
   const handleShowMore = async () => {
-    const numberOfNotifications = notifications.length;
-    const startIndex = numberOfNotifications;
+    const numberOfAnnouncements = announcements.length;
+    const startIndex = numberOfAnnouncements;
     const urlParams = new URLSearchParams(location.search);
     urlParams.set('startIndex', startIndex);
     const searchQuery = urlParams.toString();
-    const res = await fetch(`/api/notification/getnotifications?${searchQuery}`);
+    const res = await fetch(`/api/announcement/getannouncements?${searchQuery}`);
     if (!res.ok) {
       return;
     }
     if (res.ok) {
       const data = await res.json();
-      setNotifications([...notifications, ...data.notifications]);
-      if (data.notifications.length === 9) {
+      setAnnouncements([...announcements, ...data.announcements]);
+      if (data.announcements.length === 9) {
         setShowMore(true);
       } else {
         setShowMore(false);
       }
     }
   };
-
   return (
     <div className='flex flex-col md:flex-row'>
       <div className='p-7 border-b md:border-r md:min-h-screen border-gray-500'>
@@ -144,16 +140,16 @@ export default function Search() {
       </div>
       <div className='w-full'>
         <h1 className='text-3xl font-semibold sm:border-b border-gray-500 p-3 mt-5 '>
-            Notifications results:
+          Announcements results:
         </h1>
         <div className='p-7 flex flex-wrap gap-4'>
-          {!loading && notifications.length === 0 && (
-            <p className='text-xl text-gray-500'>No Notifications found.</p>
+          {!loading && announcements.length === 0 && (
+            <p className='text-xl text-gray-500'>No Announcements found.</p>
           )}
           {loading && <p className='text-xl text-gray-500'>Loading...</p>}
           {!loading &&
-            notifications &&
-            notifications.map((notification) => <NotificationCard key={notification._id} notification={notification} />)}
+            announcements &&
+            announcements.map((announcement) => <AnnouncementCard key={announcement._id} announcement={announcement} />)}
           {showMore && (
             <button
               onClick={handleShowMore}

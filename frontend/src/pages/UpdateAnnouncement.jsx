@@ -14,21 +14,21 @@ import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-export default function UpdateNotification() {
+export default function UpdateAnnouncement() {
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
-  const { notificationId } = useParams();
+  const { announcementId } = useParams();
 
   const navigate = useNavigate();
     const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     try {
-      const fetchNotification = async () => {
-        const res = await fetch(`/api/notification/getnotifications?notificationId=${notificationId}`);
+      const fetchAnnouncement = async () => {
+        const res = await fetch(`/api/announcement/getannouncements?announcementId=${announcementId}`);
         const data = await res.json();
         if (!res.ok) {
           console.log(data.message);
@@ -37,15 +37,15 @@ export default function UpdateNotification() {
         }
         if (res.ok) {
           setPublishError(null);
-          setFormData(data.notifications[0]);
+          setFormData(data.announcements[0]);
         }
       };
 
-      fetchNotification();
+      fetchAnnouncement();
     } catch (error) {
       console.log(error.message);
     }
-  }, [notificationId]);
+  }, [announcementId]);
 
   const handleUpdloadImage = async () => {
     try {
@@ -86,7 +86,7 @@ export default function UpdateNotification() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/notification/updatenotification/${formData._id}/${currentUser._id}`, {
+      const res = await fetch(`/api/announcement/updateannouncement/${formData._id}/${currentUser._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export default function UpdateNotification() {
 
       if (res.ok) {
         setPublishError(null);
-        navigate(`/notification/${data.slug}`);
+        navigate(`/announcement/${data.slug}`);
       }
     } catch (error) {
       setPublishError('Something went wrong');
@@ -109,7 +109,7 @@ export default function UpdateNotification() {
   };
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
-      <h1 className='text-center text-3xl my-7 font-semibold'>Update Notification</h1>
+      <h1 className='text-center text-3xl my-7 font-semibold'>Update Announcement</h1>
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>
           <TextInput
@@ -181,7 +181,7 @@ export default function UpdateNotification() {
           }}
         />
         <Button type='submit' gradientDuoTone='purpleToPink'>
-          Update Notification
+          Update Announcement
         </Button>
         {publishError && (
           <Alert className='mt-5' color='failure'>

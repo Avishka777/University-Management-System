@@ -1,17 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import NotificationCard from '../components/NotificationCard';
+import AnnouncementCard from '../components/AnnouncementCard';
 
 export default function Home() {
-  const [notifications, setNotifications] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      const res = await fetch('/api/notification/getNotifications');
+    const fetchAnnouncements = async () => {
+      const res = await fetch('/api/announcement/getAnnouncements');
       const data = await res.json();
-      setNotifications(data.notifications);
+      setAnnouncements(data.announcements);
     };
-    fetchNotifications();
+    fetchAnnouncements();
   }, []);
   return (
     <div>
@@ -26,25 +26,25 @@ export default function Home() {
           to='/search'
           className='text-xs sm:text-sm text-teal-500 font-bold hover:underline'
         >
-          View all Notifications
+          View all Announcements
         </Link>
       </div>
 
 
       <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8 py-7'>
-        {notifications && notifications.length > 0 && (
+        {announcements && announcements.length > 0 && (
           <div className='flex flex-col gap-6'>
-            <h2 className='text-2xl font-semibold text-center'>Recent Notifications</h2>
+            <h2 className='text-2xl font-semibold uppercase'>Recent Announcements</h2>
             <div className='flex flex-wrap gap-4'>
-              {notifications.map((notification) => (
-                <NotificationCard key={notification._id} notification={notification} />
+              {announcements.map((announcement) => (
+                <AnnouncementCard key={announcement._id} announcement={announcement} />
               ))}
             </div>
             <Link
               to={'/search'}
-              className='text-lg text-teal-500 hover:underline text-center'
+              className='text-lg text-teal-500 hover:underline text-center uppercase'
             >
-              View all Notifications
+              View all Announcements
             </Link>
           </div>
         )}

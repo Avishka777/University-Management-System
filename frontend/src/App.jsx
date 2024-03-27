@@ -10,9 +10,9 @@ import TimeTable from "./pages/TimeTable"
 import Footer from "./components/Footer"
 import PrivateRoute from './components/PrivateRoute';
 import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute';
-import CreateNotification from './pages/CreateNotification';
-import UpdateNotification from './pages/UpdateNotification';
-import NotificationPage from './pages/NotificationPage';
+import CreateAnnouncement from './pages/CreateAnnouncement';
+import UpdateAnnouncement from './pages/UpdateAnnouncement';
+import AnnouncementPage from './pages/AnnouncementPage';
 import Search from './pages/Search';
 
 export default function App() {
@@ -30,13 +30,14 @@ export default function App() {
         </Route>
 
         <Route element={<OnlyAdminPrivateRoute />}>
-          <Route path='/create-notification' element={<CreateNotification />} />
-          <Route path='/update-notification/:notificationId' element={<UpdateNotification />} />
+          <Route path='/create-announcement' element={<CreateAnnouncement />} />
+          <Route path='/update-announcement/:announcementId' element={<UpdateAnnouncement />} />
         </Route>
 
         <Route path="/programmes" element={<Programmes/>}/>
-        <Route path='/notification/:notificationSlug' element={<NotificationPage />} />
+        <Route path='/announcement/:announcementSlug' element={<AnnouncementPage />} />
         <Route path="/time-table" element={<TimeTable/>}/>
+
       </Routes>
       <Footer/>
     </BrowserRouter>
