@@ -44,3 +44,24 @@ export const getNotificationById = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+// Route to Update Notification
+export const updateNotification = async (req, res) => {
+    try {
+        const { notificationTitle, notificationBody } = req.body;
+        const notificationId = req.params.id;
+
+        const notification = await Notification.findById(notificationId);
+        if (!notification) {
+            return next(errorHandler(404, 'Notification Not Found'));
+        }
+
+        notification.notificationTitle = notificationTitle;
+        notification.notificationBody = notificationBody;
+        const updatedNotification = await notification.save();
+
+        res.status(200).json(updatedNotification);
+    } catch (error) {
+        next(error);
+    }
+};
