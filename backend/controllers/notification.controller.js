@@ -31,3 +31,16 @@ export const getAllNotification = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+// Route to Get Notification By ID
+export const getNotificationById = async (req, res) => {
+    try {
+        const notification = await Notification.findById(req.params.id);
+        if (!notification) {
+            return res.status(404).json({ error: 'Notification Not Found' });
+        }
+        res.json(notification);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
