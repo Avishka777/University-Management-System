@@ -65,3 +65,17 @@ export const updateNotification = async (req, res) => {
         next(error);
     }
 };
+
+
+// Route to Delete Notification
+export const deleteNotification = async (req, res) => {
+    try {
+        const deletedNotification = await Notification.findByIdAndDelete(req.params.id);
+        if (!deletedNotification) {
+            return res.status(404).json({ error: 'Notification Not Found' });
+        }
+        res.json({ message: 'Notification Deleted Successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
