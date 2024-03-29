@@ -1,19 +1,19 @@
 import TimeTable from '../models/timetable.model.js';
 import { errorHandler } from '../utils/error.js';
+import Notification from '../models/notification.model.js';
+
+
 
 // Updated create method
 export const create = async (req, res, next) => {
     if (!req.user.isAdmin) {
         return next(errorHandler(403, 'You are not allowed to create a timetable'));
     }
-
     try {
         const { classSession, course, day, startTime, endTime, faculty, location } = req.body;
-
         // Convert start and end times to Date objects
         const startDateTime = new Date(`${day}T${startTime}`);
         const endDateTime = new Date(`${day}T${endTime}`);
-
         // Check for overlapping sessions
         const overlappingSessions = await TimeTable.find({
             day,
@@ -23,12 +23,10 @@ export const create = async (req, res, next) => {
                 { $and: [{ endTime: { $gt: startTime, $lte: endTime } }] } // Case 3: New session ends during existing session
             ]
         });
-
         // If there are overlapping sessions, return an error
         if (overlappingSessions.length > 0) {
             return next(errorHandler(400, 'Session overlaps with existing sessions'));
         }
-
         // Create a new timetable object
         const newTimetable = new TimeTable({
             classSession,
@@ -41,13 +39,19 @@ export const create = async (req, res, next) => {
         });
         // Save the timetable object to the database
         const savedTimetable = await newTimetable.save();
+
+        // Create a notification for the new timetable entry
+        const notification = new Notification({
+            notificationTitle: 'New Timetable Entry Added',
+            notificationBody: `A new timetable entry has been added for ${day} from ${startTime} to ${endTime}.`
+        });
+        const savedNotification = await notification.save();
+
         res.status(201).json(savedTimetable);
     } catch (error) {
         next(error);
     }
 };
-
-
 // Get all timetables
 export const getAll = async (req, res, next) => {
     try {
@@ -75,17 +79,14 @@ export const update = async (req, res, next) => {
     try {
         const { classSession, course, day, startTime, endTime, faculty, location } = req.body;
         const timetableId = req.params.id;
-
         // Check if timetable exists
         const timetable = await TimeTable.findById(timetableId);
         if (!timetable) {
             return next(errorHandler(404, 'Timetable not found'));
         }
-
         // Convert start and end times to Date objects
         const startDateTime = new Date(`${day}T${startTime}`);
         const endDateTime = new Date(`${day}T${endTime}`);
-
         // Check for overlapping sessions excluding the current session being updated
         const overlappingSessions = await TimeTable.find({
             day,
@@ -96,12 +97,10 @@ export const update = async (req, res, next) => {
                 { $and: [{ endTime: { $gt: startTime, $lte: endTime } }] } // Case 3: New session ends during existing session
             ]
         });
-
         // If there are overlapping sessions (excluding the current session being updated), return an error
         if (overlappingSessions.length > 0) {
             return next(errorHandler(400, 'Update results in session overlap with existing sessions'));
         }
-
         // Update timetable fields
         timetable.classSession = classSession;
         timetable.course = course;
@@ -110,17 +109,21 @@ export const update = async (req, res, next) => {
         timetable.endTime = endTime;
         timetable.faculty = faculty;
         timetable.location = location;
-
         // Save the updated timetable
         const updatedTimetable = await timetable.save();
+
+        // Create a update notification for the new timetable entry
+        const notification = new Notification({
+            notificationTitle: 'Timetable Updated',
+            notificationBody: `A New Time Table Entry Has Been Updated for ${day} from ${startTime} to ${endTime}.`
+        });
+        const savedNotification = await notification.save();
+
         res.status(200).json(updatedTimetable);
     } catch (error) {
         next(error);
     }
 };
-
-
-
 // Delete timetable by ID
 export const remove = async (req, res, next) => {
     try {
