@@ -17,8 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      default:
-        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+      default:'https://firebasestorage.googleapis.com/v0/b/mern-university-management.appspot.com/o/profile-icon.jpg?alt=media&token=c487ef8b-8243-471e-b8b1-1899b28fd80d',
     },
     isAdmin: {
       type: Boolean,

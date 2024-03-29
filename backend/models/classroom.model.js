@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
-
 const bookingSchema = new mongoose.Schema(
     {
     lectureID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Reference to Lecture model if needed
+        ref: 'User',
         required: true
     },
     date: {
@@ -20,7 +19,6 @@ const bookingSchema = new mongoose.Schema(
         required: true
     }
 });
-
 const roomSchema = new mongoose.Schema({
     roomName: {
         type: String,
@@ -34,10 +32,9 @@ const roomSchema = new mongoose.Schema({
         type: [],
         required: true
     },
-    bookings: [bookingSchema] // Array of bookings for the room
+    bookings: [bookingSchema]
 }, { timestamps: true });
 
 
 const Classroom = mongoose.model('Classroom', roomSchema);
-
 export default Classroom;
