@@ -32,7 +32,9 @@ const courseSchema = new mongoose.Schema(
       unique: true,
     },
   },
-  { timestamps: true }
+{ timestamps: true }
 );
+
 const Course = mongoose.model('Course', courseSchema);
+
 export default Course;
