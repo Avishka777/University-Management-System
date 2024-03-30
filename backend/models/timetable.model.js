@@ -29,7 +29,9 @@ const timeTableSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-}, { timestamps: true });
+}, 
+{ timestamps: true }
+);
 
 const TimeTable = mongoose.model('TimeTable', timeTableSchema);
 
