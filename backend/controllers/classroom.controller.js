@@ -1,14 +1,16 @@
 import Classroom from '../models/classroom.model.js';
 import { errorHandler } from '../utils/error.js';
+import Notification from '../models/notification.model.js';
+
+//Create Class Room
 export const create = async (req, res, next) => {
     if (!req.user.isAdmin) {
-        return next(errorHandler(403, 'You are not allowed to book classrooms'));
+        return next(errorHandler(403, 'You Are Not Allowed to Book class Rooms.'));
     }
     try {
-        // Retrieve data from request body
         const { lectureID, date: dateString, startTime, endTime, roomName, capacity, facilities } = req.body;
-        // Parse date string into a Date object
         const date = new Date(dateString);
+
         // Check if the specified date and time slot is already booked
         const isAvailable = await Classroom.findOne({
             roomName,
@@ -34,20 +36,14 @@ export const create = async (req, res, next) => {
                 }
             ]
         });
+
         if (isAvailable) {
-            return next(errorHandler(400, 'The room is not available at the specified time'));
+            return next(errorHandler(400, 'The Room is Not Available At the Specified Time'));
         }
-        // Create a new booking object
-        const booking = {
-            lectureID,
-            date,
-            startTime,
-            endTime
-        };
-        // Find or create the classroom
+        const booking = {lectureID,date,startTime,endTime};
         let classroom = await Classroom.findOne({ roomName });
+        
         if (!classroom) {
-            // Create a new Classroom object if it doesn't exist
             classroom = new Classroom({
                 roomName,
                 capacity,
@@ -55,15 +51,15 @@ export const create = async (req, res, next) => {
                 bookings: []
             });
         }
-        // Push the new booking to the bookings array of the Classroom object
         classroom.bookings.push(booking);
-        // Save the Classroom object to the database
         const savedClassroom = await classroom.save();
         res.status(201).json(savedClassroom);
     } catch (error) {
         next(error);
     }
 };
+
+//Get All Class Rooms
 export const getAll = async (req, res, next) => {
     try {
         const classrooms = await Classroom.find();
@@ -72,12 +68,14 @@ export const getAll = async (req, res, next) => {
         next(error);
     }
 };
+
+//Get Class Room By ID
 export const getByID = async (req, res, next) => {
     const { id } = req.params;
     try {
         const classroom = await Classroom.findById(id);
         if (!classroom) {
-            return next(errorHandler(404, 'Classroom not found'));
+            return next(errorHandler(404, 'Classroom Not Found'));
         }
         res.status(200).json(classroom);
     } catch (error) {
@@ -85,40 +83,40 @@ export const getByID = async (req, res, next) => {
     }
 };
 
+//Update Class Room
 export const update = async (req, res, next) => {
     const { id } = req.params;
     const { roomName, capacity, facilities, lectureID, date: dateString, startTime, endTime } = req.body;
     try {
         const classroom = await Classroom.findById(id);
         if (!classroom) {
-            return next(errorHandler(404, 'Classroom not found'));
+            return next(errorHandler(404, 'Classroom Not Found'));
         }
         // Parse date string into a Date object
         const date = new Date(dateString);
-        // Update the classroom properties
         classroom.roomName = roomName;
         classroom.capacity = capacity;
         classroom.facilities = facilities;
-        // Remove existing bookings
-        classroom.bookings = [];
-        // Add the new booking
-        const booking = {
-            lectureID,
-            date,
-            startTime,
-            endTime
-        };
+
+        classroom.bookings = [];// Remove existing bookings
+        const booking = {lectureID,date,startTime,endTime};// Add the new booking
         classroom.bookings.push(booking);
-        // Save the updated classroom object
         const updatedClassroom = await classroom.save();
+
+         // Create a Notification For the New Class Room
+        const notification = new Notification({
+            notificationTitle: 'Class Room Changed!',
+            notificationBody: `A class Room Has Been Updated.`
+        });
+        const savedNotification = await notification.save();
+
         res.status(200).json(updatedClassroom);
     } catch (error) {
         next(error);
     }
 };
 
-
-
+//Delete Class Room
 export const remove = async (req, res, next) => {
     const { id } = req.params;
     try {
@@ -126,7 +124,7 @@ export const remove = async (req, res, next) => {
         if (!classroom) {
             return next(errorHandler(404, 'Classroom not found'));
         }
-        await classroom.deleteOne(); // Use deleteOne() method instead of remove()
+        await classroom.deleteOne();
         res.status(200).json({ message: 'Classroom deleted successfully' });
     } catch (error) {
         next(error);
