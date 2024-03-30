@@ -2,7 +2,7 @@ import Announcement from '../models/announcement.model.js';
 import { errorHandler } from '../utils/error.js';
 import Notification from '../models/notification.model.js';
 
-//Create Announcement
+// Route to Create Announcement
 export const create = async (req, res, next) => {
   if (!req.user.isAdmin) {
     return next(errorHandler(403, 'You Are Not Allowed to Create a Announcement.'));
@@ -34,13 +34,14 @@ export const create = async (req, res, next) => {
     next(error);
   }
 };
-//Get All Announcement
+
+// Route to Get All Announcement
 export const getannouncements = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === 'asc' ? 1 : -1;
-
+    
     const announcements = await Announcement.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
@@ -77,7 +78,7 @@ export const getannouncements = async (req, res, next) => {
   }
 };
 
-//Delete Announcement
+// Route to Delete Announcement
 export const deleteannouncement = async (req, res, next) => {
   if (!req.user.isAdmin) {
     return next(errorHandler(403, 'You Are Not Allowed to Delete This Announcement.'));
@@ -90,7 +91,7 @@ export const deleteannouncement = async (req, res, next) => {
   }
 };
 
-//Update Announcement
+// Route to Update Announcement
 export const updateannouncement = async (req, res, next) => {
   if (!req.user.isAdmin) {
     return next(errorHandler(403, 'You Are Not Allowed to Update This Announcement.'));

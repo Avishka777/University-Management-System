@@ -1,14 +1,8 @@
 import mongoose from 'mongoose';
 
-
-
-
 const announcementSchema = new mongoose.Schema(
-
   {
-
     userId: {
-
       type: String,
       required: true,
     },
@@ -35,17 +29,9 @@ const announcementSchema = new mongoose.Schema(
       unique: true,
     },
   },
-
-  { timestamps: true }
-
+{ timestamps: true }
 );
 
-
-
-
 const Announcement = mongoose.model('Announcement', announcementSchema);
-
-
-
 
 export default Announcement;
