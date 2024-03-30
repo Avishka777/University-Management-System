@@ -1,14 +1,14 @@
 import Announcement from '../models/announcement.model.js';
 import { errorHandler } from '../utils/error.js';
-
+import Notification from '../models/notification.model.js';
 
 //Create Announcement
 export const create = async (req, res, next) => {
   if (!req.user.isAdmin) {
-    return next(errorHandler(403, 'You Are Not Allowed to Create a Announcement'));
+    return next(errorHandler(403, 'You Are Not Allowed to Create a Announcement.'));
   }
   if (!req.body.title || !req.body.content) {
-    return next(errorHandler(400, 'Please Provide All Required Fields'));
+    return next(errorHandler(400, 'Please Provide All Required Fields.'));
   }
   const slug = req.body.title
     .split(' ')
@@ -22,18 +22,25 @@ export const create = async (req, res, next) => {
   });
   try {
     const savedAnnouncement = await newAnnouncement.save();
+
+    // Create a Notification For the New Annuncement Entry
+    const notification = new Notification({
+      notificationTitle: 'New Announcement Published!',
+      notificationBody: `A New Announcement Has Been Added.`
+    });
+    const savedNotification = await notification.save();
     res.status(201).json(savedAnnouncement);
   } catch (error) {
     next(error);
   }
 };
-
 //Get All Announcement
 export const getannouncements = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === 'asc' ? 1 : -1;
+
     const announcements = await Announcement.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
@@ -51,19 +58,15 @@ export const getannouncements = async (req, res, next) => {
       .limit(limit);
 
     const totalAnnouncements = await Announcement.countDocuments();
-
     const now = new Date();
-
     const oneMonthAgo = new Date(
       now.getFullYear(),
       now.getMonth() - 1,
       now.getDate()
     );
-
     const lastMonthAnnouncements = await Announcement.countDocuments({
       createdAt: { $gte: oneMonthAgo },
     });
-
     res.status(200).json({
       announcements,
       totalAnnouncements,
@@ -76,8 +79,8 @@ export const getannouncements = async (req, res, next) => {
 
 //Delete Announcement
 export const deleteannouncement = async (req, res, next) => {
-  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
-    return next(errorHandler(403, 'You Are Not Allowed to Delete This Announcement'));
+  if (!req.user.isAdmin) {
+    return next(errorHandler(403, 'You Are Not Allowed to Delete This Announcement.'));
   }
   try {
     await Announcement.findByIdAndDelete(req.params.announcementId);
@@ -89,8 +92,8 @@ export const deleteannouncement = async (req, res, next) => {
 
 //Update Announcement
 export const updateannouncement = async (req, res, next) => {
-  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
-    return next(errorHandler(403, 'You Are Not Allowed to Update This Announcement'));
+  if (!req.user.isAdmin) {
+    return next(errorHandler(403, 'You Are Not Allowed to Update This Announcement.'));
   }
   try {
     const updatedAnnouncement = await Announcement.findByIdAndUpdate(
