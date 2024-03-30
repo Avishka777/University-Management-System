@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const bookingSchema = new mongoose.Schema(
     {
     lectureID: {
@@ -18,7 +19,9 @@ const bookingSchema = new mongoose.Schema(
         type: Date,
         required: true
     }
-});
+}
+);
+
 const roomSchema = new mongoose.Schema({
     roomName: {
         type: String,
@@ -33,8 +36,10 @@ const roomSchema = new mongoose.Schema({
         required: true
     },
     bookings: [bookingSchema]
-}, { timestamps: true });
-
+}, 
+{ timestamps: true }
+);
 
 const Classroom = mongoose.model('Classroom', roomSchema);
+
 export default Classroom;
