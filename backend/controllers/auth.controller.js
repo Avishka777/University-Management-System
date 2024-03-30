@@ -2,17 +2,12 @@ import User from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
+
+// Route to Create Sign-Up
 export const signup = async (req, res, next) => {
   const { username, email, password,role } = req.body;
-  if (
-    !username ||
-    !email ||
-    !password ||
-    username === '' ||
-    email === '' ||
-    password === ''
-  ) {
-    next(errorHandler(400, 'All fields are required'));
+  if (!username || !email || !password || username === '' || email === '' || password === '' ) {
+    next(errorHandler(400, 'All Fields Are Required.'));
   }
   const hashedPassword = bcryptjs.hashSync(password, 10);
   const newUser = new User({
@@ -23,24 +18,26 @@ export const signup = async (req, res, next) => {
   });
   try {
     await newUser.save();
-    res.json('Signup successful');
+    res.json('Signup Successful.');
   } catch (error) {
     next(error);
   }
 };
+
+// Route to Create Sign-In
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password || email === '' || password === '') {
-    next(errorHandler(400, 'All fields are required'));
+    next(errorHandler(400, 'All Fields Are Required.'));
   }
   try {
     const validUser = await User.findOne({ email });
     if (!validUser) {
-      return next(errorHandler(404, 'User not found'));
+      return next(errorHandler(404, 'User Not Found.'));
     }
     const validPassword = bcryptjs.compareSync(password, validUser.password);
     if (!validPassword) {
-      return next(errorHandler(400, 'Invalid password'));
+      return next(errorHandler(400, 'Invalid Password.'));
     }
     const token = jwt.sign(
       { id: validUser._id, isAdmin: validUser.isAdmin },
@@ -57,6 +54,8 @@ export const signin = async (req, res, next) => {
     next(error);
   }
 };
+
+// Route to Add Google Login
 export const google = async (req, res, next) => {
   const { email, name, googlePhotoUrl } = req.body;
   try {
