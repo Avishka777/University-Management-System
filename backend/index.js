@@ -9,6 +9,7 @@ const timetableRoutes = require('./routes/timetable.route.js');
 const notificationRoutes = require('./routes/notification.route.js');
 const bookingRoutes = require('./routes/classroom.route.js');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 dotenv.config();
 mongoose
@@ -33,6 +34,12 @@ app.use('/api/course', courseRoutes);
 app.use('/api/classroom', bookingRoutes);
 app.use('/api/timetable', timetableRoutes);
 app.use('/api/notification', notificationRoutes);
+
+app.use(express.static(path.join(__dirname, '/frontend/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+});
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
