@@ -1,24 +1,26 @@
-import bcryptjs from 'bcryptjs';
-import { errorHandler } from '../utils/error.js';
-import User from '../models/user.model.js';
-
+const bcryptjs = require('bcryptjs');
+const { errorHandler } = require('../utils/error.js');
+const User = require('../models/user.model.js');
+const validator = require('validator');
 
 // Route to Test 
-export const test = (req, res) => {
+exports.test = (req, res) => {
   res.json({ message: 'API is Working!' });
 };
 
 
 // Route to Update User
-export const updateUser = async (req, res, next) => {
-  if (!req.user.isAdmin) {
-    return next(errorHandler(403, 'You Are Not Allowed to Update This User.'));
-  }
+exports.updateUser = async (req, res, next) => {
   if (req.body.password) {
     if (req.body.password.length < 6) {
       return next(errorHandler(400, 'Password Must Be At Least 6 Characters.'));
     }
     req.body.password = bcryptjs.hashSync(req.body.password, 10);
+  }
+  if (req.body.email) {
+    if (!validator.isEmail(req.body.email)) {
+      return next(errorHandler(400, 'Invalid email address.'));
+    }
   }
   if (req.body.username) {
     if (req.body.username.length < 7 || req.body.username.length > 20) {
@@ -44,6 +46,7 @@ export const updateUser = async (req, res, next) => {
           email: req.body.email,
           profilePicture: req.body.profilePicture,
           password: req.body.password,
+          enrolledCourses: req.body.enrolledCourses,
         },
       },
       { new: true }
@@ -57,8 +60,8 @@ export const updateUser = async (req, res, next) => {
 
 
 // Route to Delete User
-export const deleteUser = async (req, res, next) => {
-  if (!req.user.isAdmin && req.user.id !== req.params.userId) {
+exports.deleteUser = async (req, res, next) => {
+  if (!req.user.isAdmin) {
       return next(errorHandler(403, 'You Are Not Allowed to Delete This User.'));
     }
     try {
@@ -70,7 +73,7 @@ export const deleteUser = async (req, res, next) => {
   };
 
 // Route to Delete User
-export const signout = (req, res, next) => {
+exports.signout = (req, res, next) => {
   try {
     res
       .clearCookie('access_token')
@@ -82,7 +85,7 @@ export const signout = (req, res, next) => {
 };
 
 // Route to Get All Users
-export const getUsers = async (req, res, next) => {
+exports.getUsers = async (req, res, next) => {
   if (!req.user.isAdmin) {
     return next(errorHandler(403, 'You Are Not Allowed to See All Users.'));
   }

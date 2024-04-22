@@ -1,20 +1,49 @@
-import User from '../models/user.model.js';
-import bcryptjs from 'bcryptjs';
-import { errorHandler } from '../utils/error.js';
-import jwt from 'jsonwebtoken';
+const User = require('../models/user.model.js');
+const bcryptjs = require('bcryptjs');
+const { errorHandler } = require('../utils/error.js');
+const jwt = require('jsonwebtoken');
+const validator = require('validator');
 
 // Route to Create Sign-Up
-export const signup = async (req, res, next) => {
-  const { username, email, password,role } = req.body;
+exports.signup = async (req, res, next) => {
+  const { username, email, password,role,enrolledCourses,isFaculty } = req.body;
   if (!username || !email || !password || username === '' || email === '' || password === '' ) {
     next(errorHandler(400, 'All Fields Are Required.'));
+  }
+  if (req.body.password) {
+    if (req.body.password.length < 6) {
+      return next(errorHandler(400, 'Password Must Be At Least 6 Characters.'));
+    }
+    req.body.password = bcryptjs.hashSync(req.body.password, 10);
+  }
+  if (req.body.email) {
+    if (!validator.isEmail(req.body.email)) {
+      return next(errorHandler(400, 'Invalid email address.'));
+    }
+  }
+  if (req.body.username) {
+    if (req.body.username.length < 7 || req.body.username.length > 20) {
+      return next(
+        errorHandler(400, 'User Name Must Be Between 7 and 20 Characters')
+      );
+    }
+    if (req.body.username.includes(' ')) {
+      return next(errorHandler(400, 'User Name Can Not Contain Spaces'));
+    }
+    if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
+      return next(
+        errorHandler(400, 'User Name Can Only Contain Letters and Numbers')
+      );
+    }
   }
   const hashedPassword = bcryptjs.hashSync(password, 10);
   const newUser = new User({
     username,
     email,
     password: hashedPassword,
+    isFaculty,
     role,
+    enrolledCourses,
   });
   try {
     await newUser.save();
@@ -25,7 +54,7 @@ export const signup = async (req, res, next) => {
 };
 
 // Route to Create Sign-In
-export const signin = async (req, res, next) => {
+exports.signin = async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password || email === '' || password === '') {
     next(errorHandler(400, 'All Fields Are Required.'));
@@ -40,7 +69,11 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(400, 'Invalid Password.'));
     }
     const token = jwt.sign(
-      { id: validUser._id, isAdmin: validUser.isAdmin },
+      { 
+        id: validUser._id, 
+        isAdmin: validUser.isAdmin,
+        isFaculty: validUser.isFaculty
+      },
       process.env.JWT_SECRET
     );
     const { password: pass, ...rest } = validUser._doc;
@@ -56,7 +89,7 @@ export const signin = async (req, res, next) => {
 };
 
 // Route to Add Google Login
-export const google = async (req, res, next) => {
+exports.google = async (req, res, next) => {
   const { email, name, googlePhotoUrl } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -87,7 +120,11 @@ export const google = async (req, res, next) => {
       });
       await newUser.save();
       const token = jwt.sign(
-        { id: newUser._id, isAdmin: newUser.isAdmin },
+        { 
+          id: newUser._id, 
+          isAdmin: newUser.isAdmin,
+          isFaculty: validUser.isFaculty
+        },
         process.env.JWT_SECRET
       );
       const { password, ...rest } = newUser._doc;

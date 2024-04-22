@@ -1,14 +1,14 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import userRoutes from './routes/user.route.js';
-import authRoutes from './routes/auth.route.js';
-import announcementRoutes from './routes/announcement.route.js';
-import courseRoutes from './routes/course.route.js';
-import timetableRoutes from './routes/timetable.route.js';
-import notificationRoutes from './routes/notification.route.js'
-import bookingRoutes from './routes/classroom.route.js';
-import cookieParser from 'cookie-parser';
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const userRoutes = require('./routes/user.route.js');
+const authRoutes = require('./routes/auth.route.js');
+const announcementRoutes = require('./routes/announcement.route.js');
+const courseRoutes = require('./routes/course.route.js');
+const timetableRoutes = require('./routes/timetable.route.js');
+const notificationRoutes = require('./routes/notification.route.js');
+const bookingRoutes = require('./routes/classroom.route.js');
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 mongoose
@@ -30,7 +30,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/announcement', announcementRoutes);
 app.use('/api/course', courseRoutes);
-app.use('/api/booking', bookingRoutes);
+app.use('/api/classroom', bookingRoutes);
 app.use('/api/timetable', timetableRoutes);
 app.use('/api/notification', notificationRoutes);
 
@@ -43,3 +43,5 @@ app.use((err, req, res, next) => {
     message,
   });
 });
+
+module.exports = app;

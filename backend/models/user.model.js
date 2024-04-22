@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,6 +25,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isFaculty: {
+      type: Boolean,
+      default: false,
+    },
     role: { 
       type: String, 
       default: false 
@@ -38,4 +43,4 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.model('User', userSchema);
 
-export default User;
+module.exports = User;

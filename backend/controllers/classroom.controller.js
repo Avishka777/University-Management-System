@@ -1,10 +1,10 @@
-import Classroom from '../models/classroom.model.js';
-import { errorHandler } from '../utils/error.js';
-import Notification from '../models/notification.model.js';
+const Classroom = require('../models/classroom.model.js');
+const { errorHandler } = require('../utils/error.js');
+const Notification = require('../models/notification.model.js');
 
 // Route to Create Class Room
-export const create = async (req, res, next) => {
-    if (!req.user.isAdmin) {
+exports.create = async (req, res, next) => {
+    if (!req.user.isAdmin && !req.user.isFaculty) {
         return next(errorHandler(403, 'You Are Not Allowed to Book class Rooms.'));
     }
     try {
@@ -60,7 +60,7 @@ export const create = async (req, res, next) => {
 };
 
 // Route to Get All Class Rooms
-export const getAll = async (req, res, next) => {
+exports.getAll = async (req, res, next) => {
     try {
         const classrooms = await Classroom.find();
         res.status(200).json(classrooms);
@@ -70,7 +70,7 @@ export const getAll = async (req, res, next) => {
 };
 
 // Route to Get Class Room By ID
-export const getByID = async (req, res, next) => {
+exports.getByID = async (req, res, next) => {
     const { id } = req.params;
     try {
         const classroom = await Classroom.findById(id);
@@ -84,13 +84,16 @@ export const getByID = async (req, res, next) => {
 };
 
 // Route to Update Class Room
-export const update = async (req, res, next) => {
+exports.update = async (req, res, next) => {
+    if (!req.user.isAdmin && !req.user.isFaculty) {
+        return next(errorHandler(403, 'You Are Not Allowed to Update Book class Rooms.'));
+    }
     const { id } = req.params;
     const { roomName, capacity, facilities, lectureID, date: dateString, startTime, endTime } = req.body;
     try {
         const classroom = await Classroom.findById(id);
         if (!classroom) {
-            return next(errorHandler(404, 'Classroom Not Found.'));
+            return next(errorHandler(403, 'Classroom Not Found.'));
         }
         // Parse date string into a Date object
         const date = new Date(dateString);
@@ -103,10 +106,10 @@ export const update = async (req, res, next) => {
         classroom.bookings.push(booking);
         const updatedClassroom = await classroom.save();
 
-         // Create a Notification For the New Class Room
+        // Create a Notification For the New Class Room
         const notification = new Notification({
             notificationTitle: 'Class Room Changed!',
-            notificationBody: `A class Room Has Been Updated.`
+            notificationBody: `BookedClass Room "${roomName}" Has Been Changed On ${date.toDateString()}.`
         });
         const savedNotification = await notification.save();
 
@@ -117,15 +120,18 @@ export const update = async (req, res, next) => {
 };
 
 // Route to Delete Class Room
-export const remove = async (req, res, next) => {
+exports.remove = async (req, res, next) => {
+    if (!req.user.isAdmin && !req.user.isFaculty) {
+        return next(errorHandler(403, 'You Are Not Allowed to Delete Book class Rooms.'));
+    }
     const { id } = req.params;
     try {
         const classroom = await Classroom.findById(id);
         if (!classroom) {
-            return next(errorHandler(404, 'Classroom not found.'));
+            return next(errorHandler(404, 'Class Room Not Found.'));
         }
         await classroom.deleteOne();
-        res.status(200).json({ message: 'Classroom deleted successfully.' });
+        res.status(200).json({ message: 'Classroom Deleted Successfully.' });
     } catch (error) {
         next(error);
     }

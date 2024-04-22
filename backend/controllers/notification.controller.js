@@ -1,8 +1,12 @@
-import Notification from '../models/notification.model.js';
-import { errorHandler } from '../utils/error.js';
+const Notification = require('../models/notification.model.js');
+const { errorHandler } = require('../utils/error.js');
+
 
 //Create Notification
-export const createNotification = async (req, res, next) => {
+exports.createNotification = async (req, res, next) => {
+    if (!req.user.isAdmin && !req.user.isFaculty) {
+        return next(errorHandler(403, 'You Are Not Allowed to Create a Announcement.'));
+    }
     try {
         const { notificationTitle, notificationBody } = req.body;
         const newNotification = new Notification({notificationTitle,notificationBody});
@@ -14,7 +18,7 @@ export const createNotification = async (req, res, next) => {
 };
 
 //Get All Notifications
-export const getAllNotification = async (req, res) => {
+exports.getAllNotification = async (req, res) => {
   try {
       const notifications = await Notification.find();
       res.json(notifications);
@@ -24,7 +28,7 @@ export const getAllNotification = async (req, res) => {
 };
 
 // Route to Get Notification By ID
-export const getNotificationById = async (req, res) => {
+exports.getNotificationById = async (req, res) => {
     try {
         const notification = await Notification.findById(req.params.id);
         if (!notification) {
@@ -37,7 +41,10 @@ export const getNotificationById = async (req, res) => {
 };
 
 // Route to Update Notification
-export const updateNotification = async (req, res) => {
+exports.updateNotification = async (req, res) => {
+    if (!req.user.isAdmin && !req.user.isFaculty) {
+        return next(errorHandler(403, 'You Are Not Allowed to Update a Announcement.'));
+    }
     try {
         const { notificationTitle, notificationBody } = req.body;
         const notificationId = req.params.id;
@@ -58,7 +65,7 @@ export const updateNotification = async (req, res) => {
 };
 
 // Route to Delete Notification
-export const deleteNotification = async (req, res) => {
+exports.deleteNotification = async (req, res) => {
     try {
         const deletedNotification = await Notification.findByIdAndDelete(req.params.id);
         if (!deletedNotification) {

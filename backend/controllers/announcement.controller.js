@@ -1,10 +1,10 @@
-import Announcement from '../models/announcement.model.js';
-import { errorHandler } from '../utils/error.js';
-import Notification from '../models/notification.model.js';
+const Announcement = require('../models/announcement.model.js');
+const { errorHandler } = require('../utils/error.js');
+const Notification = require('../models/notification.model.js');
 
 // Route to Create Announcement
-export const create = async (req, res, next) => {
-  if (!req.user.isAdmin) {
+exports.create = async (req, res, next) => {
+  if (!req.user.isAdmin && !req.user.isFaculty) {
     return next(errorHandler(403, 'You Are Not Allowed to Create a Announcement.'));
   }
   if (!req.body.title || !req.body.content) {
@@ -26,7 +26,7 @@ export const create = async (req, res, next) => {
     // Create a Notification For the New Annuncement Entry
     const notification = new Notification({
       notificationTitle: 'New Announcement Published!',
-      notificationBody: `A New Announcement Has Been Added.`
+      notificationBody: `${req.body.title}`
     });
     const savedNotification = await notification.save();
     res.status(201).json(savedAnnouncement);
@@ -36,7 +36,7 @@ export const create = async (req, res, next) => {
 };
 
 // Route to Get All Announcement
-export const getannouncements = async (req, res, next) => {
+exports.getannouncements = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
@@ -79,9 +79,9 @@ export const getannouncements = async (req, res, next) => {
 };
 
 // Route to Delete Announcement
-export const deleteannouncement = async (req, res, next) => {
-  if (!req.user.isAdmin) {
-    return next(errorHandler(403, 'You Are Not Allowed to Delete This Announcement.'));
+exports.deleteannouncement = async (req, res, next) => {
+  if (!req.user.isAdmin && !req.user.isFaculty) {
+    return next(errorHandler(403, 'You Are Not Allowed to Delete a Announcement.'));
   }
   try {
     await Announcement.findByIdAndDelete(req.params.announcementId);
@@ -92,8 +92,8 @@ export const deleteannouncement = async (req, res, next) => {
 };
 
 // Route to Update Announcement
-export const updateannouncement = async (req, res, next) => {
-  if (!req.user.isAdmin) {
+exports.updateannouncement = async (req, res, next) => {
+  if (!req.user.isAdmin && !req.user.isFaculty) {
     return next(errorHandler(403, 'You Are Not Allowed to Update This Announcement.'));
   }
   try {

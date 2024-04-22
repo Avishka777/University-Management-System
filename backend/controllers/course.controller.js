@@ -1,9 +1,10 @@
-import Course from '../models/course.model.js';
-import { errorHandler } from '../utils/error.js';
+const Course = require('../models/course.model.js');
+const { errorHandler } = require('../utils/error.js');
+
 
 //Create Course
-export const create = async (req, res, next) => {
-  if (!req.user.isAdmin) {
+exports.create = async (req, res, next) => {
+  if (!req.user.isAdmin && !req.user.isFaculty) {
     return next(errorHandler(403, 'You Are Not Allowed to Create a Course.'));
   }
   if (!req.body.courseCode || !req.body.courseName) {
@@ -28,7 +29,7 @@ export const create = async (req, res, next) => {
 };
 
 //Get Courses
-export const getcourses = async (req, res, next) => {
+exports.getcourses = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
@@ -72,8 +73,8 @@ export const getcourses = async (req, res, next) => {
 };
   
 //Delete Course
-export const deletecourse = async (req, res, next) => {
-  if (!req.user.isAdmin) {
+exports.deletecourse = async (req, res, next) => {
+  if (!req.user.isAdmin && !req.user.isFaculty) {
     return next(errorHandler(403, 'You Are Not Allowed to Delete This Course.'));
   }
   try {
@@ -85,8 +86,8 @@ export const deletecourse = async (req, res, next) => {
 };
   
 //Update Course
-export const updatecourse = async (req, res, next) => {
-  if (!req.user.isAdmin) {
+exports.updatecourse = async (req, res, next) => {
+  if (!req.user.isAdmin && !req.user.isFaculty) {
     return next(errorHandler(403, 'You Are Not Allowed to Update This Course.'));
   }
   try {
@@ -98,7 +99,7 @@ export const updatecourse = async (req, res, next) => {
           courseCode: req.body.courseCode,
           courseDescription: req.body.courseDescription,
           courseCredit: req.body.courseCredit,
-          courseFaculty: req.body.courseFaculty,
+          enrolledfaculty: req.body.enrolledfaculty,
         },
       },
       { new: true }

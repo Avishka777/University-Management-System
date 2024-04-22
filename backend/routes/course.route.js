@@ -1,12 +1,13 @@
-import express from 'express';
-import { verifyToken } from '../utils/verifyUser.js';
-import { create,  getcourses, deletecourse, updatecourse} from '../controllers/course.controller.js';
+const express = require('express');
+const { verifyToken } = require('../utils/verifyUser.js');
+const { create, getcourses, deletecourse, updatecourse } = require('../controllers/course.controller.js');
+
 
 const router = express.Router();
 
 router.post('/create', verifyToken, create)
 router.get('/getcourses', getcourses)
-router.delete('/deletecourse/:courseId/:userId', verifyToken, deletecourse)
-router.put('/updatecourse/:courseId/:userId', verifyToken, updatecourse)
+router.delete('/deletecourse/:courseId', verifyToken, deletecourse)
+router.put('/updatecourse/:courseId', verifyToken, updatecourse)
 
-export default router;
+module.exports = router;

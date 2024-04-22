@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+
 
 const timeTableSchema = new mongoose.Schema({
     classSession: {
@@ -35,4 +36,4 @@ const timeTableSchema = new mongoose.Schema({
 
 const TimeTable = mongoose.model('TimeTable', timeTableSchema);
 
-export default TimeTable;
+module.exports = TimeTable;

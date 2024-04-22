@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+
 
 const bookingSchema = new mongoose.Schema(
     {
@@ -12,11 +13,11 @@ const bookingSchema = new mongoose.Schema(
         required: true
     },
     startTime: {
-        type: Date,
+        type: String,
         required: true
     },
     endTime: {
-        type: Date,
+        type: String,
         required: true
     }
 }
@@ -42,4 +43,5 @@ const roomSchema = new mongoose.Schema({
 
 const Classroom = mongoose.model('Classroom', roomSchema);
 
-export default Classroom;
+module.exports = Classroom;
+

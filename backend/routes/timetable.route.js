@@ -1,6 +1,13 @@
-import express from 'express';
-import { verifyToken } from '../utils/verifyUser.js';
-import { create, getAll, getById, getWeeklyTimetable, remove, update } from '../controllers/titmetable.controller.js';
+const express = require('express');
+const { verifyToken } = require('../utils/verifyUser.js');
+const {
+  create,
+  getAll,
+  getById,
+  getWeeklyTimetable,
+  remove,
+  update
+} = require('../controllers/timetable.controller.js');
 
 const router = express.Router();
 
@@ -9,6 +16,6 @@ router.get('/gettimetables', verifyToken, getAll)
 router.get('/getweektimetables', verifyToken, getWeeklyTimetable)
 router.get('/gettimetable/:id', verifyToken, getById)
 router.put('/updatetimetable/:id', verifyToken, update)
-router.delete('/deletetimetable/:id', remove);
+router.delete('/deletetimetable/:id', verifyToken, remove);
 
-export default router;
+module.exports = router;
