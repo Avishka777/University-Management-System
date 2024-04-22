@@ -3,9 +3,13 @@ import { useLocation } from 'react-router-dom';
 import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import DashAnnouncements from '../components/DashAnnouncements';
+import DashCourses from '../components/DashCourses';
 import DashUsers from '../components/DashUsers';
 import DashboardComp from '../components/DashboardComp';
-import SignUp from './SignUp';
+import DashTimtable from '../components/DashTimtable';
+import DashClassrooms from '../components/DashClassrooms';
+import DashNotification from '../components/DashNotifications';
+
 export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState('');
@@ -22,14 +26,22 @@ export default function Dashboard() {
         {/* Sidebar */}
         <DashSidebar />
       </div>
-      {/* profile... */}
+      {/* profile */}
       {tab === 'profile' && <DashProfile />}
-      {/* announcements... */}
+      {/* announcements */}
       {tab === 'announcements' && <DashAnnouncements />}
-      {/* users */}
+      {/* courses */}
+      {tab === 'courses' && <DashCourses />}
+      {/* Users */}
       {tab === 'users' && <DashUsers />}
-      {/* dashboard comp */}
+      {/* Dashboard */}
       {tab === 'dash' && <DashboardComp />}
+      {/* Time Tables */}
+      {tab === 'timetables' && <DashTimtable />}
+      {/* Class Rooms */}
+      {tab === 'classrooms' && <DashClassrooms />}
+      {/* Notification */}
+      {tab === 'notifications' && <DashNotification />}
     </div>
   );
 }

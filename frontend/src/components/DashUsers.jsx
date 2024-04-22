@@ -3,12 +3,15 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { FaCheck, FaTimes } from 'react-icons/fa';
+
 export default function DashUsers() {
   const { currentUser } = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState('');
+  
+  // Fetch Users When Component Mounts or CurrentUser Changes
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -28,6 +31,8 @@ export default function DashUsers() {
       fetchUsers();
     }
   }, [currentUser._id]);
+
+  // Fetch More Users When "Show More" Button Is Clicked
   const handleShowMore = async () => {
     const startIndex = users.length;
     try {
@@ -43,6 +48,8 @@ export default function DashUsers() {
       console.log(error.message);
     }
   };
+
+  // Delete User When "Yes, I'm Sure" Button Is Clicked In Modal
   const handleDeleteUser = async () => {
     try {
         const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
@@ -59,13 +66,14 @@ export default function DashUsers() {
         console.log(error.message);
     }
   };
-
+  
   return (
-    <div className=' ml-auto mr-auto mt-10  '>
-
+    <div className=' mx-auto w-full p-5'>
+      {/* Render Table If CurrentUser Is Admin And There Are Users */}
       {currentUser.isAdmin && users.length > 0 ? (
         <>
           <Table hoverable className='shadow-md'>
+            {/* Table Head */}
             <Table.Head>
               <Table.HeadCell>Date created</Table.HeadCell>
               <Table.HeadCell>User image</Table.HeadCell>
@@ -76,6 +84,7 @@ export default function DashUsers() {
               <Table.HeadCell>Student</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
+            {/* Table Body */}
             {users.map((user) => (
               <Table.Body className='divide-y' key={user._id}>
                 <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
@@ -92,21 +101,21 @@ export default function DashUsers() {
                   <Table.Cell>{user.username}</Table.Cell>
                   <Table.Cell>{user.email}</Table.Cell>
                   <Table.Cell>
-                    {user.isAdmin ? (
+                    {(user.role=='admin') ? (
                       <FaCheck className='text-green-500' />
                     ) : (
                       <FaTimes className='text-red-500' />
                     )}
                   </Table.Cell>
                   <Table.Cell>
-                    {user.isFaculty ? (
+                    {(user.role=='faculty') ? (
                       <FaCheck className='text-green-500' />
                     ) : (
                       <FaTimes className='text-red-500' />
                     )}
                   </Table.Cell>
                   <Table.Cell>
-                    {!(user.isFaculty||user.isAdmin) ? (
+                    {(user.role=='student') ? (
                       <FaCheck className='text-green-500' />
                     ) : (
                       <FaTimes className='text-red-500' />
@@ -127,6 +136,7 @@ export default function DashUsers() {
               </Table.Body>
             ))}
           </Table>
+          {/* Show More Button */}
           {showMore && (
             <button
               onClick={handleShowMore}
@@ -139,6 +149,7 @@ export default function DashUsers() {
       ) : (
         <p>You have no users yet!</p>
       )}
+      {/* Modal For Confirming User Deletion */}
       <Modal
         show={showModal}
         onClose={() => setShowModal(false)}
@@ -153,9 +164,11 @@ export default function DashUsers() {
               Are you sure you want to delete this user?
             </h3>
             <div className='flex justify-center gap-4'>
+              {/* Confirm Deletion Button */}
               <Button color='failure' onClick={handleDeleteUser}>
                 Yes, I'm sure
               </Button>
+              {/* Cancel Deletion Button */}
               <Button color='gray' onClick={() => setShowModal(false)}>
                 No, cancel
               </Button>

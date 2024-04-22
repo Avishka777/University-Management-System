@@ -4,19 +4,23 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import AnnouncementCard from '../components/AnnouncementCard';
 
 export default function Search() {
+  // State For Storing Search Filters
   const [sidebarData, setSidebarData] = useState({
     searchTerm: '',
     sort: 'desc',
     category: 'uncategorized',
   });
 
-  console.log(sidebarData);
+  // State For Storing Announcement Data
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
-
+  // Get Current URL Location
   const location = useLocation();
+  // Initialize Navigation Hook
   const navigate = useNavigate();
+
+  // Effect Hook To Update Data Based On URL Changes
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
@@ -31,6 +35,7 @@ export default function Search() {
       });
     }
 
+    // Function To Fetch Announcements Bbased On URL Parameters
     const fetchAnnouncements = async () => {
       setLoading(true);
       const searchQuery = urlParams.toString();
@@ -53,6 +58,7 @@ export default function Search() {
     fetchAnnouncements();
   }, [location.search]);
 
+  // Handler For Input Changes
   const handleChange = (e) => {
     if (e.target.id === 'searchTerm') {
       setSidebarData({ ...sidebarData, searchTerm: e.target.value });
@@ -66,6 +72,8 @@ export default function Search() {
       setSidebarData({ ...sidebarData, category });
     }
   };
+
+  // Handler For Form Submission
   const handleSubmit = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(location.search);
@@ -76,6 +84,7 @@ export default function Search() {
     navigate(`/search?${searchQuery}`);
   };
 
+  // Handler For Showing More Announcements
   const handleShowMore = async () => {
     const numberOfAnnouncements = announcements.length;
     const startIndex = numberOfAnnouncements;
@@ -96,12 +105,15 @@ export default function Search() {
       }
     }
   };
+
   return (
     <div className='flex flex-col md:flex-row'>
-      <div className='p-7 border-b md:border-r md:min-h-screen border-gray-500'>
-        <form className='flex flex-col gap-8' onSubmit={handleSubmit}>
-          <div className='flex   items-center gap-2'>
-            <label className='whitespace-nowrap font-semibold'>
+      {/* Sidebar With Search Filters */}
+      <div className='p-7 border-b md:border-r md:min-h-screen border-gray-500 min-w-[300px]'>
+        <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+          {/* Search Term Input */}
+          <div className='items-center gap-2'>
+            <label className='whitespace-nowrap font-semibold ml-1'>
               Search Term:
             </label>
             <TextInput
@@ -110,21 +122,25 @@ export default function Search() {
               type='text'
               value={sidebarData.searchTerm}
               onChange={handleChange}
+              className='mt-3'
             />
           </div>
-          <div className='flex items-center gap-2'>
-            <label className='font-semibold'>Sort:</label>
-            <Select onChange={handleChange} value={sidebarData.sort} id='sort'>
+          {/* Sort Select */}
+          <div className='items-center gap-2'>
+            <label className='font-semibold ml-1'>Sort:</label>
+            <Select onChange={handleChange} value={sidebarData.sort} id='sort' className='mt-3'>
               <option value='desc'>Latest</option>
               <option value='asc'>Oldest</option>
             </Select>
           </div>
-          <div className='flex items-center gap-2'>
-            <label className='font-semibold'>Category:</label>
+          {/* Category Select */}
+          <div className='items-center gap-2'>
+            <label className='font-semibold ml-1'>Category:</label>
             <Select
               onChange={handleChange}
               value={sidebarData.category}
               id='category'
+              className='mt-3'
             >
                 <option value='uncategorized'>Select a Faculty</option>
                 <option value='All Students'>All Students</option>
@@ -133,20 +149,24 @@ export default function Search() {
                 <option value='Faculty of Business'>Faculty of Business</option>
             </Select>
           </div>
+          {/* Apply Filters Button */}
           <Button type='submit' outline gradientDuoTone='purpleToPink'>
             Apply Filters
           </Button>
         </form>
       </div>
+      {/* Announcement Results */}
       <div className='w-full'>
         <h1 className='text-3xl font-semibold sm:border-b border-gray-500 p-3 mt-5 '>
-          Announcements results:
+          Announcements Results :
         </h1>
         <div className='p-7 flex flex-wrap gap-4'>
+          {/* Show Loading or No Results Message */}
           {!loading && announcements.length === 0 && (
-            <p className='text-xl text-gray-500'>No Announcements found.</p>
+            <p className='text-xl text-gray-500'>No Announcements Found.</p>
           )}
           {loading && <p className='text-xl text-gray-500'>Loading...</p>}
+          {/* Display Announcements */}
           {!loading &&
             announcements &&
             announcements.map((announcement) => <AnnouncementCard key={announcement._id} announcement={announcement} />)}
@@ -155,7 +175,7 @@ export default function Search() {
               onClick={handleShowMore}
               className='text-teal-500 text-lg hover:underline p-7 w-full'
             >
-              Show More
+              Show More...
             </button>
           )}
         </div>

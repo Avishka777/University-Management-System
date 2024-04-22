@@ -1,41 +1,31 @@
 import { Alert, Button, Modal, ModalBody, TextInput } from 'flowbite-react';
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable,} from 'firebase/storage';
 import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import {
-  updateStart,
-  updateSuccess,
-  updateFailure,
-  deleteUserStart,
-  deleteUserSuccess,
-  deleteUserFailure,
-  signoutSuccess,
-} from '../redux/user/userSlice';
+import { updateStart, updateSuccess, updateFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure, signoutSuccess,} from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
+
 export default function DashProfile() {
-  const { currentUser, error, loading } = useSelector((state) => state.user);
-  const [imageFile, setImageFile] = useState(null);
-  const [imageFileUrl, setImageFileUrl] = useState(null);
-  const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
-  const [imageFileUploadError, setImageFileUploadError] = useState(null);
-  const [imageFileUploading, setImageFileUploading] = useState(false);
-  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
-  const [updateUserError, setUpdateUserError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({});
-  const filePickerRef = useRef();
-  const dispatch = useDispatch();
+  const { currentUser, error, loading } = useSelector((state) => state.user); // Getting CurrentUser, Error, And Loading State From Redux Store
+  const [imageFile, setImageFile] = useState(null); // State Variable For Storing Image File
+  const [imageFileUrl, setImageFileUrl] = useState(null); // State Variable For Storing Image File URL
+  const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null); // State Variable For Storing Image File Upload Progress
+  const [imageFileUploadError, setImageFileUploadError] = useState(null); // State Variable For Storing Image File Upload Error
+  const [imageFileUploading, setImageFileUploading] = useState(false); // State Variable For Indicating Whether Image File Is Uploading
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null); // State Variable For Indicating Update User Success
+  const [updateUserError, setUpdateUserError] = useState(null); // State Variable For Indicating Update User Error
+  const [showModal, setShowModal] = useState(false); // State Variable For Indicating Whether Modal Is Visible
+  const [formData, setFormData] = useState({}); // State Variable For Form Data
+  const filePickerRef = useRef(); // Reference For File Input Element
+  const dispatch = useDispatch(); // useDispatch Hook For Dispatching Redux Actions
+  
+  // Function To Handle Image Change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -48,12 +38,14 @@ export default function DashProfile() {
       uploadImage();
     }
   }, [imageFile]);
+
+  // Function To Upload Image
   const uploadImage = async () => {
     // service firebase.storage {
     //   match /b/{bucket}/o {
     //     match /{allPaths=**} {
     //       allow read;
-    //       allow write: if
+    //       allow write: if 
     //       request.resource.size < 2 * 1024 * 1024 &&
     //       request.resource.contentType.matches('image/.*')
     //     }
@@ -90,9 +82,13 @@ export default function DashProfile() {
       }
     );
   };
+
+  // Function To Handle Form Input Change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+
+  // Function to Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdateUserError(null);
@@ -127,23 +123,8 @@ export default function DashProfile() {
       setUpdateUserError(error.message);
     }
   };
-  const handleDeleteUser = async () => {
-    setShowModal(false);
-    try {
-      dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        dispatch(deleteUserFailure(data.message));
-      } else {
-        dispatch(deleteUserSuccess(data));
-      }
-    } catch (error) {
-      dispatch(deleteUserFailure(error.message));
-    }
-  };
+
+  // Function To Handle Signout
   const handleSignout = async () => {
     try {
       const res = await fetch('/api/user/signout', {
@@ -159,9 +140,13 @@ export default function DashProfile() {
       console.log(error.message);
     }
   };
+
   return (
-    <div className='max-w-lg mx-auto p-3 w-full'>
-      <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
+    <div className='max-w-lg mx-auto p-3 w-full mt-10'>
+      <div>
+          <h1 className="text-3xl text-red-600 text-center font-serif uppercase shadow-lg"> - Profile details - </h1>
+          <hr className="my-4 border-gray-300 dark:border-gray-600" />
+      </div>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input
           type='file'
@@ -238,10 +223,7 @@ export default function DashProfile() {
         </Button>
         
       </form>
-      <div className='text-red-500 flex justify-between mt-5'>
-        <span onClick={() => setShowModal(true)} className='cursor-pointer'>
-          Delete Account
-        </span>
+      <div className='text-red-500 flex justify-center border-2 border-red-800 p-1 rounded mt-5'>
         <span onClick={handleSignout} className='cursor-pointer'>
           Sign Out
         </span>
@@ -268,22 +250,7 @@ export default function DashProfile() {
         size='md'
       >
         <Modal.Header />
-        <Modal.Body>
-          <div className='text-center'>
-            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
-            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
-              Are you sure you want to delete your account?
-            </h3>
-            <div className='flex justify-center gap-4'>
-              <Button color='failure' onClick={handleDeleteUser}>
-                Yes, I'm sure
-              </Button>
-              <Button color='gray' onClick={() => setShowModal(false)}>
-                No, cancel
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
+        
       </Modal>
     </div>
   );

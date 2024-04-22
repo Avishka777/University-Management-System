@@ -17,6 +17,7 @@ export default function Header() {
   const { theme } = useSelector((state) => state.theme);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Update Search Term State When URL Search Parameter Changes
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
@@ -24,6 +25,8 @@ export default function Header() {
       setSearchTerm(searchTermFromUrl);
     }
   }, [location.search]);
+
+  // Handle User Sign Out
   const handleSignout = async () => {
     try {
       const res = await fetch('/api/user/signout', {
@@ -40,6 +43,7 @@ export default function Header() {
     }
   };
 
+  // Handle Search Form Submission
   const handleSubmit = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(location.search);
@@ -47,14 +51,16 @@ export default function Header() {
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
-
+  
   return (
     <Navbar className='border-b-2'>
-      <Navbar.Brand href="#">
-        <img src={logo} className="mr-3 h-6 sm:h-9" alt="SLIIT Logo" />
-        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">SLIIT UNIVERSITY</span>
+      <Navbar.Brand href="/">
+        {/* logo section */}
+        <img src={logo} className="ml-10 mr-3 h-full w-full sm:h-9" alt="Stark Logo" />
+        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-cyan-500">STARK UNIVERSITY</span>
       </Navbar.Brand>
-
+      
+      {/* Search Form */}
       <form onSubmit={handleSubmit}>
         <TextInput
           type='text'
@@ -65,14 +71,16 @@ export default function Header() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
-
+      
+      {/* Search Button For Mobile */}
       <Button className='w-12 h-10 lg:hidden' color='gray' pill>
         <AiOutlineSearch />
       </Button>
       
+      {/* Theme Toggle Button And User Profile Dropdown */}
       <div className='flex gap-2 md:order-2'>
       <Button
-          className='w-12 h-10 hidden sm:inline'
+          className='w-12 h-10 hidden sm:inline mr-3'
           color='gray'
           pill
           onClick={() => dispatch(toggleTheme())}
@@ -109,24 +117,29 @@ export default function Header() {
         )}
         <Navbar.Toggle />
       </div>
+
+      {/* Navbar Links */}
       <Navbar.Collapse>
-        <Navbar.Link active={path === '/'} as={'div'} style={{ color: path === "/" ? "#F05941" : "#387ADF" }}>
+        {/* Home Link */}
+        <Navbar.Link active={path === '/'} as={'div'} style={{ color: path === "/" ? "#E27D1D" : "#128AAE" }}>
           <Link to='/'>Home</Link>
         </Navbar.Link>
         
         <div className="border-l border-gray-500 h-6"></div>
-        
-        <Navbar.Link active={path === '/programmes'} as={'div'} style={{ color: path === "/programmes" ? "#F05941" : "#387ADF" }}>
-          <Link to='/programmes'>Programmes</Link>
+        {/* Programmes Link */}
+        <Navbar.Link active={path === '/courses'} as={'div'} style={{ color: path === "/courses" ? "#E27D1D" : "#128AAE" }}>
+          <Link to='/courses'>Courses</Link>
         </Navbar.Link>
+
         <div className="border-l border-gray-500 h-6"></div>
-        
-        <Navbar.Link active={path === '/time-table'} as={'div'} style={{ color: path === "/time-table" ? "#F05941" : "#387ADF" }}>
-          <Link to='/time-table'>Time Table</Link>
+        {/* Time Table Link */}
+        <Navbar.Link active={path === '/timetables'} as={'div'} style={{ color: path === "/timetables" ? "#E27D1D" : "#128AAE" }}>
+          <Link to='/timetables'>Time Tables</Link>
         </Navbar.Link>
+
         <div className="border-l border-gray-500 h-6"></div>
-        
-        <Navbar.Link active={path === '/about'} as={'div'} style={{ color: path === "/about" ? "#F05941" : "#387ADF" }}>
+        {/* About Link */}
+        <Navbar.Link active={path === '/about'} as={'div'} style={{ color: path === "/about" ? "#E27D1D" : "#128AAE" }}>
           <Link to='/about'>About</Link>
         </Navbar.Link>
       

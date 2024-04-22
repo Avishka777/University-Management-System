@@ -1,12 +1,7 @@
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable,} from 'firebase/storage';
 import { app } from '../firebase';
 import { useEffect, useState } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -15,16 +10,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 export default function UpdateAnnouncement() {
+  // State Variables
   const [file, setFile] = useState(null);
-  const [imageUploadProgress, setImageUploadProgress] = useState(null);
-  const [imageUploadError, setImageUploadError] = useState(null);
-  const [formData, setFormData] = useState({});
-  const [publishError, setPublishError] = useState(null);
-  const { announcementId } = useParams();
+  const [imageUploadProgress, setImageUploadProgress] = useState(null); // Image Upload Progress State
+  const [imageUploadError, setImageUploadError] = useState(null); // Image Upload Error State
+  const [formData, setFormData] = useState({}); // Form Data State
+  const [publishError, setPublishError] = useState(null); // Publish Error State
+  const { announcementId } = useParams(); // Get Announcement ID From URL Params
 
-  const navigate = useNavigate();
-    const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate(); // Navigation Hook
+    const { currentUser } = useSelector((state) => state.user); // Redux Hook to Get Current User
 
+  // Fetch Announcement Data When AnnouncementId Changes  
   useEffect(() => {
     try {
       const fetchAnnouncement = async () => {
@@ -47,6 +44,7 @@ export default function UpdateAnnouncement() {
     }
   }, [announcementId]);
 
+  // Function to Handle Image Upload
   const handleUpdloadImage = async () => {
     try {
       if (!file) {
@@ -78,15 +76,17 @@ export default function UpdateAnnouncement() {
         }
       );
     } catch (error) {
-      setImageUploadError('Image upload failed');
+      setImageUploadError('Image Upload Failed');
       setImageUploadProgress(null);
       console.log(error);
     }
   };
+
+  // Function to Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/announcement/updateannouncement/${formData._id}/${currentUser._id}`, {
+      const res = await fetch(`/api/announcement/updateannouncement/${formData._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -108,10 +108,14 @@ export default function UpdateAnnouncement() {
     }
   };
   return (
-    <div className='p-3 max-w-3xl mx-auto min-h-screen'>
-      <h1 className='text-center text-3xl my-7 font-semibold'>Update Announcement</h1>
+    <div className='p-3 max-w-3xl mx-auto min-h-screen mt-10'>
+      <div>
+          <h1 className="text-3xl text-red-600 text-center font-serif uppercase shadow-lg"> - Update Announcement - </h1>
+          <hr className="my-4 border-gray-300 dark:border-gray-600" />
+      </div>
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>
+          {/* Title Input */}
           <TextInput
             type='text'
             placeholder='Title'
@@ -123,6 +127,7 @@ export default function UpdateAnnouncement() {
             }
             value={formData.title}
           />
+          {/* Category Input */}
           <Select
             onChange={(e) =>
               setFormData({ ...formData, category: e.target.value })
@@ -137,11 +142,13 @@ export default function UpdateAnnouncement() {
           </Select>
         </div>
         <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
+          {/* File Input for Image Upload */}
           <FileInput
             type='file'
             accept='image/*'
             onChange={(e) => setFile(e.target.files[0])}
           />
+          {/* Button to Upload Image */}
           <Button
             type='button'
             gradientDuoTone='purpleToBlue'
@@ -162,6 +169,7 @@ export default function UpdateAnnouncement() {
             )}
           </Button>
         </div>
+        {/* Display Image Preview If Image Is Uploaded */}
         {imageUploadError && <Alert color='failure'>{imageUploadError}</Alert>}
         {formData.image && (
           <img
@@ -170,6 +178,7 @@ export default function UpdateAnnouncement() {
             className='w-full h-72 object-cover'
           />
         )}
+        {/* ReactQuill Editor For Content */}
         <ReactQuill
           theme='snow'
           value={formData.content}
@@ -180,9 +189,11 @@ export default function UpdateAnnouncement() {
             setFormData({ ...formData, content: value });
           }}
         />
+        {/* Button To Submit Form */}
         <Button type='submit' gradientDuoTone='purpleToPink'>
           Update Announcement
         </Button>
+        {/* Display Publish Error If Present */}
         {publishError && (
           <Alert className='mt-5' color='failure'>
             {publishError}

@@ -4,21 +4,20 @@ import logo from '../assets/logo.png';
 
 export default function FooterCom() {
   return (
-    // Footer container with border, shadow, and rounded corners
+    // Footer Container
     <Footer container className='border border-t-7 shadow-lg rounded-none'>
       <div className='w-full ml-auto'>
         <div className='grid w-full justify-between sm:flex md:grid-cols-1'>
-          {/* Logo and university name */}
+          {/* Logo And University Name */}
           <div className='mt-5 ml-40'>  
-            <img src={logo} className="ml-auto mr-auto" alt="SLIIT Logo" width="80" height="40" />
-            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">SLIIT UNIVERSITY</span>
+            <img src={logo} className="ml-auto mr-auto" alt="SLIIT Logo" width="140" height="40" />
+            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">STARK UNIVERSITY</span>
           </div>
-
-          {/* Section visible only on small screens */}
+          
           <div className='grid grid-cols-2 gap-8 mt-4 sm:grid-cols-3 sm:gap-6'>
             <div>
               <Footer.Title title='Reference' />
-              {/* Links for reference */}
+              {/* Links For Reference */}
               <Footer.LinkGroup col>
                 <Footer.Link href='#'>Faculty of Computing</Footer.Link>
                 <Footer.Link href='#'>Faculty of Engineering</Footer.Link>
@@ -27,7 +26,7 @@ export default function FooterCom() {
             </div>
             <div>
               <Footer.Title title='Services' />
-              {/* Links for services */}
+              {/* Links For Services */}
               <Footer.LinkGroup col>
                 <Footer.Link href='#'>Help Desk</Footer.Link>
                 <Footer.Link href='#'>Student Service</Footer.Link>
@@ -36,7 +35,7 @@ export default function FooterCom() {
             </div>
             <div>
               <Footer.Title title='Legal' />
-              {/* Links for legal information */}
+              {/* Links For Legal Information */}
               <Footer.LinkGroup col>
                 <Footer.Link href='#'>Privacy Policy</Footer.Link>
                 <Footer.Link href='#'>Terms &amp; Conditions</Footer.Link>
@@ -45,7 +44,7 @@ export default function FooterCom() {
           </div>
 
         </div>
-
+          
         {/* Divider line */}
         <Footer.Divider />
         <div className='w-full sm:flex sm:items-center sm:justify-between ml-40'>

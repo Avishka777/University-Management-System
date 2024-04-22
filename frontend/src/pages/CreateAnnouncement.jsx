@@ -1,12 +1,7 @@
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable,} from 'firebase/storage';
 import { app } from '../firebase';
 import { useState } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -14,12 +9,17 @@ import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom';
 
 export default function CreateAnnouncement() {
+  // State Variables To Manage File Upload And Form Data
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
+
+  // Hook For Navigation
   const navigate = useNavigate();
+
+  // Function To Handle Image Upload
   const handleUpdloadImage = async () => {
     try {
       if (!file) {
@@ -56,6 +56,8 @@ export default function CreateAnnouncement() {
       console.log(error);
     }
   };
+
+  // Function To Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -80,14 +82,20 @@ export default function CreateAnnouncement() {
       setPublishError('Something went wrong');
     }
   };
+
+  // Rendering The Component
   return (
-    <div className='p-3 max-w-3xl mx-auto min-h-screen'>
-      <h1 className='text-center text-3xl my-7 font-semibold'>Create a Announcement</h1>
+    <div className='p-3 max-w-3xl mx-auto min-h-screen mt-10'>
+      <div>
+          <h1 className="text-3xl text-red-600 text-center font-serif uppercase shadow-lg"> - Create Announcement - </h1>
+          <hr className="my-4 border-gray-300 dark:border-gray-600" />
+      </div>
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+        {/* Input Fields For Announcement Title And Category */}
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>
           <TextInput
             type='text'
-            placeholder='Title'
+            placeholder='Announcement Title'
             required
             id='title'
             className='flex-1'
@@ -107,6 +115,7 @@ export default function CreateAnnouncement() {
             <option value='Faculty of Business'>Faculty of Business</option>
           </Select>
         </div>
+        {/* File Input And Upload Button For Image */}
         <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
           <FileInput
             type='file'
@@ -133,6 +142,7 @@ export default function CreateAnnouncement() {
             )}
           </Button>
         </div>
+        {/* Displaying Image Upload Error And Uploaded Image */}
         {imageUploadError && <Alert color='failure'>{imageUploadError}</Alert>}
         {formData.image && (
           <img
@@ -141,18 +151,21 @@ export default function CreateAnnouncement() {
             className='w-full h-72 object-cover'
           />
         )}
+        {/* Quill Editor For Announcement Content */}
         <ReactQuill
           theme='snow'
-          placeholder='Write something...'
+          placeholder='Write Announcement...'
           className='h-72 mb-12'
           required
           onChange={(value) => {
             setFormData({ ...formData, content: value });
           }}
         />
+        {/* Button To Publish Announcement */}
         <Button type='submit' gradientDuoTone='purpleToPink'>
-          Publish
+          Publish Announcement
         </Button>
+        {/* Displaying Publish Error */}
         {publishError && (
           <Alert className='mt-5' color='failure'>
             {publishError}

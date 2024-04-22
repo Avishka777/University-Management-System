@@ -5,22 +5,23 @@ import { Link } from 'react-router-dom';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { set } from 'mongoose';
 
-export default function DashAnnouncements() {
-  const { currentUser } = useSelector((state) => state.user); // Getting Current User From Redux Store
-  const [userAnnouncements, setUserAnnouncements] = useState([]); // State Variable For Storing User Announcements
-  const [showMore, setShowMore] = useState(true); // State Variable For Showing More Announcements
-  const [showModal, setShowModal] = useState(false); // State Variable For Showing Modal
-  const [announcementIdToDelete, setAnnouncementIdToDelete] = useState(''); // State Variable For Storing Announcement ID To Delete
+export default function DashCourses() {
 
-  //Function Get Announcements
+  const { currentUser } = useSelector((state) => state.user); // Getting Current User From Redux Store
+  const [userCourses, setUserCourses] = useState([]); // State Variable For Storing User Courses
+  const [showMore, setShowMore] = useState(true); // State Variable For Showing More Courses
+  const [showModal, setShowModal] = useState(false); // State Variable For Showing Modal
+  const [courseIdToDelete, setCourseIdToDelete] = useState(''); // State Variable For Storing Course ID To Delete
+
+  //Function Get Courses
   useEffect(() => {
-    const fetchAnnouncements = async () => {
+    const fetchCourses = async () => {
       try {
-        const res = await fetch(`/api/announcement/getannouncements?=${currentUser._id}`);
+        const res = await fetch(`/api/course/getcourses?=${currentUser._id}`);
         const data = await res.json();
         if (res.ok) {
-          setUserAnnouncements(data.announcements);
-          if (data.announcements.length < 9) {
+          setUserCourses(data.courses);
+          if (data.courses.length < 9) {
             setShowMore(false);
           }
         }
@@ -29,21 +30,21 @@ export default function DashAnnouncements() {
       }
     };
     if (currentUser.isAdmin) {
-      fetchAnnouncements();
+      fetchCourses();
     }
   }, [currentUser._id]);
 
-  //Function Get More Announcements
+  //Function Get More Courses
   const handleShowMore = async () => {
-    const startIndex = userAnnouncements.length;
+    const startIndex = userCourses.length;
     try {
       const res = await fetch(
-        `/api/announcement/getannouncements?userId=${currentUser._id}&startIndex=${startIndex}`
+        `/api/course/getcourses?userId=${currentUser._id}&startIndex=${startIndex}`
       );
       const data = await res.json();
       if (res.ok) {
-        setUserAnnouncements((prev) => [...prev, ...data.announcements]);
-        if (data.announcements.length < 9) {
+        setUserCourses((prev) => [...prev, ...data.courses]);
+        if (data.courses.length < 9) {
           setShowMore(false);
         }
       }
@@ -52,12 +53,12 @@ export default function DashAnnouncements() {
     }
   };
 
-  //Function Delete Announcements
-  const handleDeleteAnnouncement = async () => {
+  //Function Delete Courses
+  const handleDeleteCourse = async () => {
     setShowModal(false);
     try {
       const res = await fetch(
-        `/api/announcement/deleteannouncement/${announcementIdToDelete}`,
+        `/api/course/deletecourse/${courseIdToDelete}`,
         {
           method: 'DELETE',
         }
@@ -66,8 +67,8 @@ export default function DashAnnouncements() {
       if (!res.ok) {
         console.log(data.message);
       } else {
-        setUserAnnouncements((prev) =>
-          prev.filter((announcement) => announcement._id !== announcementIdToDelete)
+        setUserCourses((prev) =>
+          prev.filter((course) => course._id !== courseIdToDelete)
         );
       }
     } catch (error) {
@@ -76,51 +77,52 @@ export default function DashAnnouncements() {
   };
 
   return (
-    <div className='w-full p-5'>
-      {currentUser.isAdmin && userAnnouncements.length > 0 ? (
+    <div className='w-full p-5 scrollbar'>
+      {currentUser.isAdmin && userCourses.length > 0 ? (
         <>
-         {/* Table Of Announcements */}
+         {/* Table Of Courses */}
           <Table hoverable className='shadow-md'>
             <Table.Head>
-              <Table.HeadCell>Date</Table.HeadCell>
-              <Table.HeadCell>Image</Table.HeadCell>
-              <Table.HeadCell>Announcement Title</Table.HeadCell>
-              <Table.HeadCell>Category</Table.HeadCell>
+              <Table.HeadCell>Date Added</Table.HeadCell>
+              <Table.HeadCell>Course ID</Table.HeadCell>
+              <Table.HeadCell>Course Name</Table.HeadCell>
+              <Table.HeadCell>Credit</Table.HeadCell>
+              <Table.HeadCell>Lecturer</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
               <Table.HeadCell>
                 <span>Edit</span>
               </Table.HeadCell>
             </Table.Head>
-            {userAnnouncements.map((announcement) => (
+            {userCourses.map((course) => (
               <Table.Body className='divide-y'>
                 <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
                   <Table.Cell>
-                    {new Date(announcement.updatedAt).toLocaleDateString()}
+                    {new Date(course.updatedAt).toLocaleDateString()}
                   </Table.Cell>
                   <Table.Cell>
-                    <Link to={`/announcement/${announcement.slug}`}>
-                      <img
-                        src={announcement.image}
-                        alt={announcement.title}
-                        className='w-20 h-10 object-cover bg-gray-500'
-                      />
+                  <Link
+                      className='font-medium text-gray-900 dark:text-white'
+                      to={`/course/${course.slug}`}
+                    >
+                      {course.courseCode}
                     </Link>
                   </Table.Cell>
                   <Table.Cell>
                     <Link
                       className='font-medium text-gray-900 dark:text-white'
-                      to={`/announcement/${announcement.slug}`}
+                      to={`/course/${course.slug}`}
                     >
-                      {announcement.title}
+                      {course.courseName}
                     </Link>
                   </Table.Cell>
-                  <Table.Cell>{announcement.category}</Table.Cell>
+                  <Table.Cell>{course.courseCredit}</Table.Cell>
+                  <Table.Cell>{course.enrolledfaculty}</Table.Cell>
                   <Table.Cell>
                     {/* Delete Link */}
                     <span
                       onClick={() => {
                         setShowModal(true);
-                        setAnnouncementIdToDelete(announcement._id);
+                        setCourseIdToDelete(course._id);
                       }}
                       className='font-medium text-red-500 hover:underline cursor-pointer'
                     >
@@ -131,7 +133,7 @@ export default function DashAnnouncements() {
                     {/* Edit Link */}
                     <Link
                       className='text-teal-500 hover:underline'
-                      to={`/update-announcement/${announcement._id}`}
+                      to={`/update-course/${course._id}`}
                     >
                       <span>Edit</span>
                     </Link>
@@ -151,7 +153,7 @@ export default function DashAnnouncements() {
           )}
         </>
       ) : (
-        <p>You Have No Announcements Yet!</p>
+        <p>You Have No Courses Yet!</p>
       )}
       {/* Modal for confirmation */}
       <Modal
@@ -165,11 +167,11 @@ export default function DashAnnouncements() {
           <div className='text-center'>
             <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
             <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
-              Are you sure you want to delete this Announcement?
+              Are you sure you want to delete this Course?
             </h3>
             <div className='flex justify-center gap-4'>
               {/* Delete Confirmation Button */}
-              <Button color='failure' onClick={handleDeleteAnnouncement}>
+              <Button color='failure' onClick={handleDeleteCourse}>
                 Yes, I'm sure
               </Button>
               {/* Cancel Button */}
