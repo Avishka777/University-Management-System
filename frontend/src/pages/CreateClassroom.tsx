@@ -44,7 +44,7 @@ export default function CreateClassroom() {
     
     <div className='p-3 max-w-3xl mx-auto min-h-screen mt-10'>
       <div>
-          <h1 className="text-3xl text-red-600 text-center font-serif uppercase shadow-lg"> - Create Class Room - </h1>
+          <h1 className="text-3xl text-red-600 text-center font-serif uppercase "> - Create Class Room - </h1>
           <hr className="my-4 border-gray-300 dark:border-gray-600" />
       </div>
 

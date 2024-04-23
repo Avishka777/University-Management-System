@@ -52,7 +52,7 @@ export default function SignIn() {
       <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
         <div className='flex-1'>
           <div>
-            <h1 className="text-3xl text-red-600 text-center font-serif uppercase shadow-lg"> - Sign In - </h1>
+            <h1 className="text-3xl text-red-600 text-center font-serif uppercase"> - Sign In - </h1>
             <hr className="my-4 border-gray-300 dark:border-gray-600" />
           </div>
           {/* Sign-In Form */}

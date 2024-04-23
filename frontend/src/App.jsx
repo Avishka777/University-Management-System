@@ -18,7 +18,6 @@ import UpdateCourse from "./pages/UpdateCourse"
 import CoursePage from "./pages/CoursePage"
 import CreateTimetable from "./pages/CreateTimetable"
 import CreateClassroom from "./pages/CreateClassroom"
-import Timetables from "./pages/Timetables"
 import UpdateTimetable from "./pages/UpdateTimetable"
 
 export default function App() {
@@ -48,7 +47,6 @@ export default function App() {
         <Route path="/courses" element={<Courses/>}/>
         <Route path='/announcement/:announcementSlug' element={<AnnouncementPage />} />
         <Route path='/course/:courseSlug' element={<CoursePage />} />
-        <Route path="/timetables" element={<Timetables/>}/>
 
       </Routes>
       <Footer/>

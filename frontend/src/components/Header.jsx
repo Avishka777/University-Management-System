@@ -132,12 +132,6 @@ export default function Header() {
         </Navbar.Link>
 
         <div className="border-l border-gray-500 h-6"></div>
-        {/* Time Table Link */}
-        <Navbar.Link active={path === '/timetables'} as={'div'} style={{ color: path === "/timetables" ? "#E27D1D" : "#128AAE" }}>
-          <Link to='/timetables'>Time Tables</Link>
-        </Navbar.Link>
-
-        <div className="border-l border-gray-500 h-6"></div>
         {/* About Link */}
         <Navbar.Link active={path === '/about'} as={'div'} style={{ color: path === "/about" ? "#E27D1D" : "#128AAE" }}>
           <Link to='/about'>About</Link>

@@ -110,7 +110,7 @@ export default function UpdateAnnouncement() {
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen mt-10'>
       <div>
-          <h1 className="text-3xl text-red-600 text-center font-serif uppercase shadow-lg"> - Update Announcement - </h1>
+          <h1 className="text-3xl text-red-600 text-center font-serif uppercase "> - Update Announcement - </h1>
           <hr className="my-4 border-gray-300 dark:border-gray-600" />
       </div>
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
